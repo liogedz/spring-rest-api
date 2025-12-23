@@ -1,0 +1,30 @@
+server:
+  port: 8080
+
+spring:
+
+  application:
+    name: rest-api
+
+  datasource:
+
+    url: jdbc:h2:file:./data/rest_api;AUTO_SERVER=TRUE
+    username: rest_user
+    password: password
+    driver-class-name: org.h2.Driver
+
+  jpa:
+
+    hibernate.ddl-auto: create-drop
+    #jpa.hibernate.ddl-auto=update
+    properties.hibernate.format_sql: true
+    show-sql: true
+
+logging:
+
+  level:
+
+    org.springframework.security: INFO
+    org.springframework.web: INFO
+    org.hibernate.SQL: INFO
+    com.nortal.library: DEBUG
