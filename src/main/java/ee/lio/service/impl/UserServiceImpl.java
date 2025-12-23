@@ -8,6 +8,7 @@ import ee.lio.exceptions.ResourceNotFoundException;
 import ee.lio.model.User;
 import ee.lio.repository.UserRepository;
 import ee.lio.service.UserService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,10 +34,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse createUser(SignupRequest request) {
 
-        Optional<User> optionalUser = userRepository.findUserByName(request.getName());
-        if (optionalUser.isPresent()) {
-            throw new ExistingUsernameException("Username already taken.");
+        Optional<User> userByName = userRepository.findUserByName(request.getName());
+        if (userByName.isPresent()) {
+            throw new ResourceNotFoundException("Username already taken.");
         }
+        Optional<User> userByEmail = userRepository.findUserByName(request.getName());
+        if (userByEmail.isPresent()) {
+            throw new ResourceNotFoundException("Email already taken.");
+        }
+
         request.setPassword(passwordEncoder.encode(request.getPassword()));
         User savedUser = userRepository.save(userResponseConverter.userRequestToUser(request));
         return userResponseConverter.userToUserResponse(savedUser);
@@ -56,5 +62,18 @@ public class UserServiceImpl implements UserService {
             throw new ResourceNotFoundException("User not found with id: " + id);
         }
         return userResponseConverter.userToUserResponse(userFound.get());
+    }
+
+    @Override
+    public User getUserByIdentifier(String identifier) {
+        User returnValue = null;
+        Optional<User> userOptional = userRepository.findUserByNameOrEmail(identifier,
+                identifier);
+        if (userOptional.isPresent()) {
+            returnValue = userOptional.get();
+        } else {
+            throw new UsernameNotFoundException("User not found with entered credential: " + identifier);
+        }
+        return returnValue;
     }
 }

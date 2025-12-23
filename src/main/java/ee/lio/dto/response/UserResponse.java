@@ -7,7 +7,7 @@ public class UserResponse {
     private String name;
     private String email;
     private Role role;
-//        String authToken
+    private String authToken;
 
     public UserResponse() {
     }
@@ -15,11 +15,13 @@ public class UserResponse {
     public UserResponse(Integer id,
                         String name,
                         String email,
-                        Role role) {
+                        Role role,
+                        String authToken) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.role = role;
+        this.authToken = authToken;
     }
 
     public Integer getId() {
@@ -52,5 +54,13 @@ public class UserResponse {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public String getAuthToken() {
+        return authToken;
+    }
+
+    public void setAuthToken(String authToken) {
+        this.authToken = authToken;
     }
 }

@@ -20,11 +20,4 @@ spring:
     properties.hibernate.format_sql: true
     show-sql: true
 
-logging:
-
-  level:
-
-    org.springframework.security: INFO
-    org.springframework.web: INFO
-    org.hibernate.SQL: INFO
-    com.nortal.library: DEBUG
+jwtSecret: 2f98aa94ac29242baf941c383a0c9b4b1ef942bea088a47429f5d2958618182d
