@@ -17,4 +17,6 @@ public interface UserService {
     UserResponse getUserById(Integer id);
 
     User getUserByIdentifier(String identifier);
+
+    UserResponse getCurrentUser();
 }

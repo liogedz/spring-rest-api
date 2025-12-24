@@ -3,11 +3,13 @@ package ee.lio.service.impl;
 import ee.lio.converter.UserResponseConverter;
 import ee.lio.dto.request.SignupRequest;
 import ee.lio.dto.response.UserResponse;
-import ee.lio.exceptions.ExistingUsernameException;
 import ee.lio.exceptions.ResourceNotFoundException;
 import ee.lio.model.User;
 import ee.lio.repository.UserRepository;
 import ee.lio.service.UserService;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -34,11 +36,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse createUser(SignupRequest request) {
 
-        Optional<User> userByName = userRepository.findUserByName(request.getName());
+        Optional<User> userByName = userRepository.findByName(request.getName());
         if (userByName.isPresent()) {
             throw new ResourceNotFoundException("Username already taken.");
         }
-        Optional<User> userByEmail = userRepository.findUserByName(request.getName());
+        Optional<User> userByEmail = userRepository.findByName(request.getName());
         if (userByEmail.isPresent()) {
             throw new ResourceNotFoundException("Email already taken.");
         }
@@ -57,7 +59,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse getUserById(@PathVariable Integer id) {
-        Optional<User> userFound = userRepository.findById(id);
+        Optional<User> userFound = userRepository.findUserById(id);
         if (userFound.isEmpty()) {
             throw new ResourceNotFoundException("User not found with id: " + id);
         }
@@ -67,7 +69,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserByIdentifier(String identifier) {
         User returnValue = null;
-        Optional<User> userOptional = userRepository.findUserByNameOrEmail(identifier,
+        Optional<User> userOptional = userRepository.findByNameOrEmail(identifier,
                 identifier);
         if (userOptional.isPresent()) {
             returnValue = userOptional.get();
@@ -75,5 +77,18 @@ public class UserServiceImpl implements UserService {
             throw new UsernameNotFoundException("User not found with entered credential: " + identifier);
         }
         return returnValue;
+    }
+
+    @Override
+    public UserResponse getCurrentUser() {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
+            throw new UsernameNotFoundException("No authenticated user found.");
+        }
+        String currentUserName = authentication.getName();
+        return userRepository.findByName(currentUserName)
+                .map(userResponseConverter::userToUserResponse)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + currentUserName));
     }
 }

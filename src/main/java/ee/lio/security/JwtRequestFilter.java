@@ -1,6 +1,6 @@
 package ee.lio.security;
 
-import ee.lio.service.UserService;
+import ee.lio.service.impl.CustomUserDetailsService;
 import ee.lio.utils.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -18,12 +18,12 @@ import java.io.IOException;
 
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
-    private final UserService userService;
+    private final CustomUserDetailsService customUserDetailsService;
     private final JwtUtil jwtUtil;
 
-    public JwtRequestFilter(UserService userService,
+    public JwtRequestFilter(CustomUserDetailsService customUserDetailsService,
                             JwtUtil jwtUtil) {
-        this.userService = userService;
+        this.customUserDetailsService = customUserDetailsService;
         this.jwtUtil = jwtUtil;
     }
 
@@ -49,7 +49,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         }
 
         if (identifier != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.userService.getUserByIdentifier(identifier);
+            UserDetails userDetails = this.customUserDetailsService.loadUserByUsername(identifier);
             if (jwtUtil.validateToken(jwt,
                     userDetails)) {
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
