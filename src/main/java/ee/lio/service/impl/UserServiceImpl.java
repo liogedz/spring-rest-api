@@ -91,4 +91,29 @@ public class UserServiceImpl implements UserService {
                 .map(userResponseConverter::userToUserResponse)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + currentUserName));
     }
+
+    @Override
+    public void deleteUser(Integer id) {
+        Optional<User> optUser = userRepository.findUserById(id);
+        if (optUser.isEmpty()) {
+            throw new ResourceNotFoundException("User not found with id: " + id);
+        }
+        userRepository.deleteById(id);
+    }
+
+    @Override
+    public UserResponse updateUser(SignupRequest request,
+                                   Integer id) {
+        Optional<User> optUser = userRepository.findUserById(id);
+        if (optUser.isEmpty()) {
+            throw new ResourceNotFoundException("User not found with id: " + id);
+        }
+        User userToUpdate = optUser.get();
+        userToUpdate.setName(request.getName());
+        userToUpdate.setEmail(request.getEmail());
+        userToUpdate.setRole(request.getRole());
+        userToUpdate.setPassword(passwordEncoder.encode(request.getPassword()));
+        userRepository.save(userToUpdate);
+        return userResponseConverter.userToUserResponse(userToUpdate);
+    }
 }

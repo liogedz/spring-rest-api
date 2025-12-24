@@ -3,10 +3,13 @@ package ee.lio.controller;
 import ee.lio.converter.UserResponseConverter;
 import ee.lio.dto.request.LoginRequest;
 import ee.lio.dto.request.SignupRequest;
+import ee.lio.dto.request.TwoFactorRequest;
 import ee.lio.dto.response.ApiResponse;
 import ee.lio.dto.response.UserResponse;
 import ee.lio.exceptions.DataNotValidatedException;
 import ee.lio.model.User;
+import ee.lio.service.EmailService;
+import ee.lio.service.TwoFactorService;
 import ee.lio.service.UserService;
 import ee.lio.utils.JwtUtil;
 import org.springframework.http.HttpStatus;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.stream.Collectors;
 
@@ -31,15 +35,21 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtTokenUtil;
     private final UserResponseConverter userResponseConverter;
+    private final TwoFactorService twoFactorService;
+    private final EmailService emailService;
 
     public AuthController(UserService userService,
                           AuthenticationManager authenticationManager,
                           JwtUtil jwtTokenUtil,
-                          UserResponseConverter userResponseConverter) {
+                          UserResponseConverter userResponseConverter,
+                          TwoFactorService twoFactorService,
+                          EmailService emailService) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.jwtTokenUtil = jwtTokenUtil;
         this.userResponseConverter = userResponseConverter;
+        this.twoFactorService = twoFactorService;
+        this.emailService = emailService;
     }
 
     @PostMapping(value = "signup")
@@ -58,10 +68,11 @@ public class AuthController {
 
     @PostMapping("login")
     public ResponseEntity<ApiResponse> createAuthenticationToken(@RequestBody LoginRequest loginRequest) {
+        String identifier = loginRequest.getIdentifier();
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            loginRequest.getIdentifier(),
+                            identifier,
                             loginRequest.getPassword()
                     )
             );
@@ -71,9 +82,31 @@ public class AuthController {
                     .body(new ApiResponse("Invalid username or password",
                             null));
         }
+        User user = userService.getUserByIdentifier(identifier);
+        String code = twoFactorService.generateAndStoreCode(identifier);
+        emailService.send2FACode(user.getEmail(),
+                code);
 
-        User user = userService.getUserByIdentifier(loginRequest.getIdentifier());
+        return ResponseEntity.ok(new ApiResponse("Login successful. A verification code has been sent to your email.",
+                null));
+    }
+
+    @PostMapping(value = "verify")
+    public ResponseEntity<ApiResponse> verifyUser(@Validated @RequestBody TwoFactorRequest request) {
+
+        String identifier = request.identifier();
+        String submittedCode = request.code();
+
+        if (!twoFactorService.validateCode(identifier,
+                submittedCode)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
+                    "Invalid verification code");
+        }
+        twoFactorService.clearCode(identifier);
+
+        User user = userService.getUserByIdentifier(identifier);
         String jwt = jwtTokenUtil.generateToken(user);
+
         UserResponse userResponse = userResponseConverter.userToUserResponse(user);
         userResponse.setAuthToken(jwt);
 

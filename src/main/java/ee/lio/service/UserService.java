@@ -19,4 +19,9 @@ public interface UserService {
     User getUserByIdentifier(String identifier);
 
     UserResponse getCurrentUser();
+
+    void deleteUser(Integer id);
+
+    UserResponse updateUser(SignupRequest request,
+                            Integer id);
 }

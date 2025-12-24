@@ -16,8 +16,8 @@ POST http://localhost:8080/api/v1/auth/signup
 Content-Type: application/json
 
 {
-  "name": "Julia",
-  "email": "julia@julia.net",
+  "name": "Alex",
+  "email": "alex@alex.net",
   "password": "12345678",
   "role": "USER"
 }
@@ -28,12 +28,40 @@ POST http://localhost:8080/api/v1/auth/login
 Content-Type: application/json
 
 {
-  "identifier": "Julia",
+  "identifier": "Alex",
   "password": "12345678"
+}
+
+###
+# @name verify
+POST http://localhost:8080/api/v1/auth/verify
+Content-Type: application/json
+
+{
+  "identifier": "Alex",
+  "code": "843487"
 }
 
 > {%
     client.global.set("auth_token", response.body.data.authToken);
 %}
+
+###
+
+PUT http://localhost:8080/api/v1/users/1
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "name": "James",
+  "email": "james@james.net",
+  "password": "12345678",
+  "role": "ADMIN"
+}
+
+###
+
+DELETE http://localhost:8080/api/v1/users/1
+Authorization: Bearer {{auth_token}}
 
 ###

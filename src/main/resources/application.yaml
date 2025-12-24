@@ -1,23 +1,30 @@
 server:
   port: 8080
-
 spring:
-
+  config:
+    import: optional:file:.env[.properties]
   application:
     name: rest-api
-
   datasource:
-
     url: jdbc:h2:file:./data/rest_api;AUTO_SERVER=TRUE
     username: rest_user
     password: password
     driver-class-name: org.h2.Driver
-
   jpa:
-
     hibernate.ddl-auto: create-drop
     #jpa.hibernate.ddl-auto=update
     properties.hibernate.format_sql: true
     show-sql: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL_USR}
+    password: ${EMAIL_PWD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 jwtSecret: 2f98aa94ac29242baf941c383a0c9b4b1ef942bea088a47429f5d2958618182d
