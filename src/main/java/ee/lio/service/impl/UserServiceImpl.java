@@ -1,7 +1,9 @@
 package ee.lio.service.impl;
 
 import ee.lio.converter.UserResponseConverter;
+import ee.lio.dto.request.PatchRequest;
 import ee.lio.dto.request.SignupRequest;
+import ee.lio.dto.request.UpdateRequest;
 import ee.lio.dto.response.UserResponse;
 import ee.lio.exceptions.ResourceNotFoundException;
 import ee.lio.model.User;
@@ -102,18 +104,44 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse updateUser(SignupRequest request,
+    public UserResponse updateUser(UpdateRequest request,
                                    Integer id) {
         Optional<User> optUser = userRepository.findUserById(id);
         if (optUser.isEmpty()) {
             throw new ResourceNotFoundException("User not found with id: " + id);
         }
         User userToUpdate = optUser.get();
-        userToUpdate.setName(request.getName());
-        userToUpdate.setEmail(request.getEmail());
-        userToUpdate.setRole(request.getRole());
-        userToUpdate.setPassword(passwordEncoder.encode(request.getPassword()));
+        userToUpdate.setName(request.name());
+        userToUpdate.setEmail(request.email());
+        userToUpdate.setRole(request.role());
+        userToUpdate.setPassword(passwordEncoder.encode(request.password()));
         userRepository.save(userToUpdate);
         return userResponseConverter.userToUserResponse(userToUpdate);
+    }
+
+    @Override
+    public UserResponse patchUser(PatchRequest request,
+                                  Integer id) {
+        User user = userRepository.findUserById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+
+        if (request.name() != null) {
+            user.setName(request.name());
+        }
+
+        if (request.email() != null) {
+            user.setEmail(request.email());
+        }
+
+        if (request.password() != null) {
+            user.setPassword(passwordEncoder.encode(request.password()));
+        }
+
+        if (request.role() != null) {
+            user.setRole(request.role());
+        }
+
+        userRepository.save(user);
+        return userResponseConverter.userToUserResponse(user);
     }
 }

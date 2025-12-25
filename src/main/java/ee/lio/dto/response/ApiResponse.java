@@ -1,4 +1,10 @@
 package ee.lio.dto.response;
 
-public record ApiResponse(String message, Object data) {
+import jakarta.validation.constraints.NotNull;
+
+public record ApiResponse(
+        @NotNull
+        String message,
+        Object data
+) {
 }

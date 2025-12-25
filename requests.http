@@ -2,16 +2,17 @@
 GET http://localhost:8080
 
 ###
+# @name getAllUsers
 GET http://localhost:8080/api/v1/users
 Authorization: Bearer {{auth_token}}
 
 ###
-
+# @name getUserById
 GET http://localhost:8080/api/v1/users/1
 Authorization: Bearer {{auth_token}}
 
 ###
-
+# @name signup
 POST http://localhost:8080/api/v1/auth/signup
 Content-Type: application/json
 
@@ -22,7 +23,7 @@ Content-Type: application/json
   "role": "USER"
 }
 
-### Login and save token
+###
 # @name login
 POST http://localhost:8080/api/v1/auth/login
 Content-Type: application/json
@@ -32,14 +33,14 @@ Content-Type: application/json
   "password": "12345678"
 }
 
-###
+### Verify and save token
 # @name verify
 POST http://localhost:8080/api/v1/auth/verify
 Content-Type: application/json
 
 {
   "identifier": "Alex",
-  "code": "843487"
+  "code": "868699"
 }
 
 > {%
@@ -47,20 +48,30 @@ Content-Type: application/json
 %}
 
 ###
-
+# @name update(put)
 PUT http://localhost:8080/api/v1/users/1
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 {
-  "name": "James",
-  "email": "james@james.net",
+  "name": "Alex",
+  "email": "alex@alex.net",
   "password": "12345678",
-  "role": "ADMIN"
+  "role": "USER"
 }
 
 ###
+# @name update (patch)
+PATCH http://localhost:8080/api/v1/users/1
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
 
+{
+  "name": "Aleksei"
+}
+
+###
+# @name delete
 DELETE http://localhost:8080/api/v1/users/1
 Authorization: Bearer {{auth_token}}
 

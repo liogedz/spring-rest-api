@@ -1,11 +1,21 @@
 package ee.lio.dto.response;
 
 import ee.lio.model.Role;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 public class UserResponse {
+
+    @NotNull
     private Integer id;
+    @NotNull
+    @Size(min = 3, max = 20)
     private String name;
+    @NotNull
+    @Email
     private String email;
+    @NotNull
     private Role role;
     private String authToken;
 

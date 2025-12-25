@@ -1,11 +1,22 @@
 package ee.lio.dto.request;
 
 import ee.lio.model.Role;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 public class SignupRequest {
+
+    @NotNull
+    @Size(min = 3, max = 20)
     private String name;
+    @NotNull
+    @Email
     private String email;
+    @NotNull
+    @Size(min = 8)
     private String password;
+    @NotNull
     private Role role;
 
     public SignupRequest() {

@@ -1,6 +1,8 @@
 package ee.lio.service;
 
+import ee.lio.dto.request.PatchRequest;
 import ee.lio.dto.request.SignupRequest;
+import ee.lio.dto.request.UpdateRequest;
 import ee.lio.dto.response.UserResponse;
 import ee.lio.model.User;
 
@@ -22,6 +24,10 @@ public interface UserService {
 
     void deleteUser(Integer id);
 
-    UserResponse updateUser(SignupRequest request,
+    UserResponse updateUser(UpdateRequest request,
                             Integer id);
+
+
+    UserResponse patchUser(PatchRequest request,
+                           Integer id);
 }

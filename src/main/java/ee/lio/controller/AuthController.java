@@ -68,12 +68,12 @@ public class AuthController {
 
     @PostMapping("login")
     public ResponseEntity<ApiResponse> createAuthenticationToken(@RequestBody LoginRequest loginRequest) {
-        String identifier = loginRequest.getIdentifier();
+        String identifier = loginRequest.identifier();
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             identifier,
-                            loginRequest.getPassword()
+                            loginRequest.password()
                     )
             );
         } catch (BadCredentialsException e) {
