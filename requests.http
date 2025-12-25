@@ -9,6 +9,12 @@ GET http://localhost:8080/api/v1/users/1
 Authorization: Bearer {{auth_token}}
 
 ###
+
+# @name getCurrentUser
+GET http://localhost:8080/api/v1/users/current-user
+Authorization: Bearer {{auth_token}}
+
+###
 # @name signup
 POST http://localhost:8080/api/v1/auth/signup
 Content-Type: application/json
@@ -26,7 +32,7 @@ POST http://localhost:8080/api/v1/auth/login
 Content-Type: application/json
 
 {
-  "identifier": "Alex",
+  "identifier": "Aleksei",
   "password": "12345678"
 }
 
@@ -37,7 +43,7 @@ Content-Type: application/json
 
 {
   "identifier": "Alex",
-  "code": "868699"
+  "code": "805889"
 }
 
 > {%

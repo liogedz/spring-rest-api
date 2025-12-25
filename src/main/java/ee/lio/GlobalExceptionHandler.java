@@ -3,6 +3,7 @@ package ee.lio;
 import ee.lio.dto.response.ApiResponse;
 import ee.lio.exceptions.DataNotValidatedException;
 import ee.lio.exceptions.ExistingUsernameException;
+import ee.lio.exceptions.ForbiddenException;
 import ee.lio.exceptions.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,5 +31,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new ApiResponse("Not found",
                         ex.getMessage()));
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<ApiResponse> handleForbidden(ForbiddenException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(new ApiResponse("Action forbidden",
+                        ex.getMessage()));
+
     }
 }

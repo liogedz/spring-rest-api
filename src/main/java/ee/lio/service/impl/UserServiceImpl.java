@@ -5,7 +5,9 @@ import ee.lio.dto.request.PatchRequest;
 import ee.lio.dto.request.SignupRequest;
 import ee.lio.dto.request.UpdateRequest;
 import ee.lio.dto.response.UserResponse;
+import ee.lio.exceptions.ForbiddenException;
 import ee.lio.exceptions.ResourceNotFoundException;
+import ee.lio.model.Role;
 import ee.lio.model.User;
 import ee.lio.repository.UserRepository;
 import ee.lio.service.UserService;
@@ -95,20 +97,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(Integer id) {
-        Optional<User> optUser = userRepository.findUserById(id);
-        if (optUser.isEmpty()) {
-            throw new ResourceNotFoundException("User not found with id: " + id);
-        }
-        userRepository.deleteById(id);
-    }
-
-    @Override
     public UserResponse updateUser(UpdateRequest request,
                                    Integer id) {
         Optional<User> optUser = userRepository.findUserById(id);
         if (optUser.isEmpty()) {
             throw new ResourceNotFoundException("User not found with id: " + id);
+        }
+        UserResponse currentUser = getCurrentUser();
+        if (!currentUser.getId().equals(id) && !currentUser.getRole().equals(Role.ADMIN)) {
+            throw new ForbiddenException("Do not have permission to modify this user.");
         }
         User userToUpdate = optUser.get();
         userToUpdate.setName(request.name());
@@ -124,6 +121,11 @@ public class UserServiceImpl implements UserService {
                                   Integer id) {
         User user = userRepository.findUserById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+
+        UserResponse currentUser = getCurrentUser();
+        if (!currentUser.getId().equals(id) && !currentUser.getRole().equals(Role.ADMIN)) {
+            throw new ForbiddenException("Do not have permission to modify this user.");
+        }
 
         if (request.name() != null) {
             user.setName(request.name());
@@ -143,5 +145,18 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
         return userResponseConverter.userToUserResponse(user);
+    }
+
+    @Override
+    public void deleteUser(Integer id) {
+        Optional<User> optUser = userRepository.findUserById(id);
+        if (optUser.isEmpty()) {
+            throw new ResourceNotFoundException("User not found with id: " + id);
+        }
+        UserResponse currentUser = getCurrentUser();
+        if (!currentUser.getId().equals(id) && !currentUser.getRole().equals(Role.ADMIN)) {
+            throw new ForbiddenException("Do not have permission to delete this user.");
+        }
+        userRepository.deleteById(id);
     }
 }
