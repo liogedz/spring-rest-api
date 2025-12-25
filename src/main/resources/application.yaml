@@ -27,4 +27,4 @@ spring:
           starttls:
             enable: true
 
-jwtSecret: 2f98aa94ac29242baf941c383a0c9b4b1ef942bea088a47429f5d2958618182d
+jwtSecret: ${JWT_SECRET}
