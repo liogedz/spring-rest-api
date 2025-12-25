@@ -5,6 +5,7 @@ import ee.lio.dto.request.PatchRequest;
 import ee.lio.dto.request.SignupRequest;
 import ee.lio.dto.request.UpdateRequest;
 import ee.lio.dto.response.UserResponse;
+import ee.lio.exceptions.ExistingUsernameException;
 import ee.lio.exceptions.ForbiddenException;
 import ee.lio.exceptions.ResourceNotFoundException;
 import ee.lio.model.Role;
@@ -42,11 +43,11 @@ public class UserServiceImpl implements UserService {
 
         Optional<User> userByName = userRepository.findByName(request.getName());
         if (userByName.isPresent()) {
-            throw new ResourceNotFoundException("Username already taken.");
+            throw new ExistingUsernameException("Username already taken.");
         }
         Optional<User> userByEmail = userRepository.findByName(request.getName());
         if (userByEmail.isPresent()) {
-            throw new ResourceNotFoundException("Email already taken.");
+            throw new ExistingUsernameException("Email already taken.");
         }
 
         request.setPassword(passwordEncoder.encode(request.getPassword()));
@@ -103,15 +104,32 @@ public class UserServiceImpl implements UserService {
         if (optUser.isEmpty()) {
             throw new ResourceNotFoundException("User not found with id: " + id);
         }
-        UserResponse currentUser = getCurrentUser();
-        if (!currentUser.getId().equals(id) && !currentUser.getRole().equals(Role.ADMIN)) {
-            throw new ForbiddenException("Do not have permission to modify this user.");
-        }
         User userToUpdate = optUser.get();
+
+        UserResponse currentUser = getCurrentUser();
+        Integer currentUserId = currentUser.getId();
+        Role currentUserRole = currentUser.getRole();
+
+        boolean isSelf = currentUserId.equals(id);
+        boolean isAdmin = currentUserRole.equals(Role.ADMIN);
+
+        // Authorization: must be self or admin
+        if (!isSelf && !isAdmin) {
+            throw new ForbiddenException("You don't have permission to modify this user.");
+        }
+
         userToUpdate.setName(request.name());
         userToUpdate.setEmail(request.email());
-        userToUpdate.setRole(request.role());
         userToUpdate.setPassword(passwordEncoder.encode(request.password()));
+
+        // Role changes: ADMIN only
+        if (request.role() != null && !request.role().equals(userToUpdate.getRole())) {
+            if (!isAdmin) {
+                throw new ForbiddenException("Only administrators can change user roles.");
+            }
+            userToUpdate.setRole(request.role());
+        }
+
         userRepository.save(userToUpdate);
         return userResponseConverter.userToUserResponse(userToUpdate);
     }
@@ -123,8 +141,15 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
 
         UserResponse currentUser = getCurrentUser();
-        if (!currentUser.getId().equals(id) && !currentUser.getRole().equals(Role.ADMIN)) {
-            throw new ForbiddenException("Do not have permission to modify this user.");
+        Integer currentUserId = currentUser.getId();
+        Role currentUserRole = currentUser.getRole();
+
+        boolean isSelf = currentUserId.equals(id);
+        boolean isAdmin = currentUserRole.equals(Role.ADMIN);
+
+        // Authorization: must be self or admin
+        if (!isSelf && !isAdmin) {
+            throw new ForbiddenException("You don't have permission to modify this user.");
         }
 
         if (request.name() != null) {
@@ -139,7 +164,11 @@ public class UserServiceImpl implements UserService {
             user.setPassword(passwordEncoder.encode(request.password()));
         }
 
-        if (request.role() != null) {
+        // Role changes: ADMIN only
+        if (request.role() != null && !request.role().equals(user.getRole())) {
+            if (!isAdmin) {
+                throw new ForbiddenException("Only administrators can change user roles.");
+            }
             user.setRole(request.role());
         }
 

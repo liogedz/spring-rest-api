@@ -23,7 +23,7 @@ Content-Type: application/json
   "name": "Alex",
   "email": "alex@alex.net",
   "password": "12345678",
-  "role": "USER"
+  "role": "ADMIN"
 }
 
 ###
@@ -42,8 +42,8 @@ POST http://localhost:8080/api/v1/auth/verify
 Content-Type: application/json
 
 {
-  "identifier": "Alex",
-  "code": "805889"
+  "identifier": "Aleksei",
+  "code": "695964"
 }
 
 > {%
@@ -70,12 +70,12 @@ Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 {
-  "name": "Aleksei"
+  "role": "ADMIN"
 }
 
 ###
 # @name delete
-DELETE http://localhost:8080/api/v1/users/1
+DELETE http://localhost:8080/api/v1/users/2
 Authorization: Bearer {{auth_token}}
 
 ###

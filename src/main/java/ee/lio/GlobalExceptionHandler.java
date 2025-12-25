@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ExistingUsernameException.class)
     public ResponseEntity<ApiResponse> handleExistingUsername(ExistingUsernameException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(new ApiResponse("Username already exists",
+                .body(new ApiResponse("Already in use",
                         ex.getMessage()));
     }
 
