@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
         if (userByName.isPresent()) {
             throw new ExistingUsernameException("Username already taken.");
         }
-        Optional<User> userByEmail = userRepository.findByName(request.getName());
+        Optional<User> userByEmail = userRepository.findByName(request.getEmail());
         if (userByEmail.isPresent()) {
             throw new ExistingUsernameException("Email already taken.");
         }
@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserByIdentifier(String identifier) {
-        User returnValue = null;
+        User returnValue;
         Optional<User> userOptional = userRepository.findByNameOrEmail(identifier,
                 identifier);
         if (userOptional.isPresent()) {
@@ -105,6 +105,11 @@ public class UserServiceImpl implements UserService {
 
         boolean isAdmin = authorizeUserModification(id);
 
+        validateNameUniqueness(request.name(),
+                id);
+        validateEmailUniqueness(request.email(),
+                id);
+
         user.setName(request.name());
         user.setEmail(request.email());
         user.setPassword(passwordEncoder.encode(request.password()));
@@ -125,11 +130,17 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
 
         boolean isAdmin = authorizeUserModification(id);
+        String name = request.name();
+        String email = request.email();
 
-        if (request.name() != null) {
+        if (name != null) {
+            validateNameUniqueness(name,
+                    id);
             user.setName(request.name());
         }
-        if (request.email() != null) {
+        if (email != null) {
+            validateEmailUniqueness(email,
+                    id);
             user.setEmail(request.email());
         }
         if (request.password() != null) {
@@ -181,5 +192,24 @@ public class UserServiceImpl implements UserService {
             user.setRole(newRole);
         }
     }
+
+    private void validateNameUniqueness(String name,
+                                        Integer userId) {
+        userRepository.findByNameAndIdNot(name,
+                        userId)
+                .ifPresent(u -> {
+                    throw new ExistingUsernameException("Username already taken.");
+                });
+    }
+
+    private void validateEmailUniqueness(String email,
+                                         Integer userId) {
+        userRepository.findByEmailAndIdNot(email,
+                        userId)
+                .ifPresent(u -> {
+                    throw new ExistingUsernameException("Email already taken.");
+                });
+    }
+
 
 }

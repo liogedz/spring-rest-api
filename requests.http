@@ -20,7 +20,7 @@ POST http://localhost:8080/api/v1/auth/signup
 Content-Type: application/json
 
 {
-  "name": "Aleksei",
+  "name": "Alex",
   "email": "alex@alex.net",
   "password": "12345678",
   "role": "USER"
@@ -43,7 +43,7 @@ Content-Type: application/json
 
 {
   "identifier": "Alex",
-  "code": "816370"
+  "code": "867315"
 }
 
 > {%
@@ -57,8 +57,8 @@ Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 {
-  "name": "Aleksei",
-  "email": "aleksei@aleksei.net",
+  "name": "Alex",
+  "email": "alex@alex.net",
   "password": "12345678",
   "role": "USER"
 }
