@@ -5,6 +5,7 @@ import ee.lio.exceptions.DataNotValidatedException;
 import ee.lio.exceptions.ExistingUsernameException;
 import ee.lio.exceptions.ForbiddenException;
 import ee.lio.exceptions.ResourceNotFoundException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -39,5 +40,23 @@ public class GlobalExceptionHandler {
                 .body(new ApiResponse("Action forbidden",
                         ex.getMessage()));
 
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ApiResponse> handleDataIntegrityViolation(
+            DataIntegrityViolationException ex) {
+
+        String message = "Data integrity violation.";
+
+        if (ex.getMostSpecificCause().getMessage().contains("user_name_unique")) {
+            message = "Username already taken.";
+        } else if (ex.getMostSpecificCause().getMessage().contains("user_email_unique")) {
+            message = "Email already taken.";
+        }
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(new ApiResponse(message,
+                        null));
     }
 }
