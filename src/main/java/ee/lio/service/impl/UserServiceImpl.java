@@ -100,39 +100,23 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse updateUser(UpdateRequest request,
                                    Integer id) {
-        Optional<User> optUser = userRepository.findUserById(id);
-        if (optUser.isEmpty()) {
-            throw new ResourceNotFoundException("User not found with id: " + id);
-        }
-        User userToUpdate = optUser.get();
+        User user = userRepository.findUserById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
 
-        UserResponse currentUser = getCurrentUser();
-        Integer currentUserId = currentUser.getId();
-        Role currentUserRole = currentUser.getRole();
+        boolean isAdmin = authorizeUserModification(id);
 
-        boolean isSelf = currentUserId.equals(id);
-        boolean isAdmin = currentUserRole.equals(Role.ADMIN);
+        user.setName(request.name());
+        user.setEmail(request.email());
+        user.setPassword(passwordEncoder.encode(request.password()));
 
-        // Authorization: must be self or admin
-        if (!isSelf && !isAdmin) {
-            throw new ForbiddenException("You don't have permission to modify this user.");
-        }
+        applyRoleChangeIfAllowed(request.role(),
+                user,
+                isAdmin);
 
-        userToUpdate.setName(request.name());
-        userToUpdate.setEmail(request.email());
-        userToUpdate.setPassword(passwordEncoder.encode(request.password()));
-
-        // Role changes: ADMIN only
-        if (request.role() != null && !request.role().equals(userToUpdate.getRole())) {
-            if (!isAdmin) {
-                throw new ForbiddenException("Only administrators can change user roles.");
-            }
-            userToUpdate.setRole(request.role());
-        }
-
-        userRepository.save(userToUpdate);
-        return userResponseConverter.userToUserResponse(userToUpdate);
+        userRepository.save(user);
+        return userResponseConverter.userToUserResponse(user);
     }
+
 
     @Override
     public UserResponse patchUser(PatchRequest request,
@@ -140,41 +124,26 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findUserById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
 
-        UserResponse currentUser = getCurrentUser();
-        Integer currentUserId = currentUser.getId();
-        Role currentUserRole = currentUser.getRole();
-
-        boolean isSelf = currentUserId.equals(id);
-        boolean isAdmin = currentUserRole.equals(Role.ADMIN);
-
-        // Authorization: must be self or admin
-        if (!isSelf && !isAdmin) {
-            throw new ForbiddenException("You don't have permission to modify this user.");
-        }
+        boolean isAdmin = authorizeUserModification(id);
 
         if (request.name() != null) {
             user.setName(request.name());
         }
-
         if (request.email() != null) {
             user.setEmail(request.email());
         }
-
         if (request.password() != null) {
             user.setPassword(passwordEncoder.encode(request.password()));
         }
 
-        // Role changes: ADMIN only
-        if (request.role() != null && !request.role().equals(user.getRole())) {
-            if (!isAdmin) {
-                throw new ForbiddenException("Only administrators can change user roles.");
-            }
-            user.setRole(request.role());
-        }
+        applyRoleChangeIfAllowed(request.role(),
+                user,
+                isAdmin);
 
         userRepository.save(user);
         return userResponseConverter.userToUserResponse(user);
     }
+
 
     @Override
     public void deleteUser(Integer id) {
@@ -188,4 +157,29 @@ public class UserServiceImpl implements UserService {
         }
         userRepository.deleteById(id);
     }
+
+    private boolean authorizeUserModification(Integer targetUserId) {
+        UserResponse currentUser = getCurrentUser();
+
+        boolean isSelf = currentUser.getId().equals(targetUserId);
+        boolean isAdmin = currentUser.getRole() == Role.ADMIN;
+
+        if (!isSelf && !isAdmin) {
+            throw new ForbiddenException("You don't have permission to modify this user.");
+        }
+
+        return isAdmin;
+    }
+
+    private void applyRoleChangeIfAllowed(Role newRole,
+                                          User user,
+                                          boolean isAdmin) {
+        if (newRole != null && !newRole.equals(user.getRole())) {
+            if (!isAdmin) {
+                throw new ForbiddenException("Only administrators can change user roles.");
+            }
+            user.setRole(newRole);
+        }
+    }
+
 }

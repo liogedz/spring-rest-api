@@ -20,10 +20,10 @@ POST http://localhost:8080/api/v1/auth/signup
 Content-Type: application/json
 
 {
-  "name": "Alex",
+  "name": "Aleksei",
   "email": "alex@alex.net",
   "password": "12345678",
-  "role": "ADMIN"
+  "role": "USER"
 }
 
 ###
@@ -32,7 +32,7 @@ POST http://localhost:8080/api/v1/auth/login
 Content-Type: application/json
 
 {
-  "identifier": "Aleksei",
+  "identifier": "Alex",
   "password": "12345678"
 }
 
@@ -42,8 +42,8 @@ POST http://localhost:8080/api/v1/auth/verify
 Content-Type: application/json
 
 {
-  "identifier": "Aleksei",
-  "code": "695964"
+  "identifier": "Alex",
+  "code": "816370"
 }
 
 > {%
@@ -52,25 +52,25 @@ Content-Type: application/json
 
 ###
 # @name update(put)
-PUT http://localhost:8080/api/v1/users/1
+PUT http://localhost:8080/api/v1/users/2
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 {
-  "name": "Alex",
-  "email": "alex@alex.net",
+  "name": "Aleksei",
+  "email": "aleksei@aleksei.net",
   "password": "12345678",
   "role": "USER"
 }
 
 ###
 # @name update (patch)
-PATCH http://localhost:8080/api/v1/users/1
+PATCH http://localhost:8080/api/v1/users/2
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 {
-  "role": "ADMIN"
+  "role": "USER"
 }
 
 ###
