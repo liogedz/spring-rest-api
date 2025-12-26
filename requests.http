@@ -20,8 +20,8 @@ POST http://localhost:8080/api/v1/auth/signup
 Content-Type: application/json
 
 {
-  "name": "Alex",
-  "email": "alex@alex.net",
+  "name": "Aleksei",
+  "email": "a.gedz@silport.ee",
   "password": "12345678",
   "role": "USER"
 }

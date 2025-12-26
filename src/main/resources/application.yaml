@@ -4,7 +4,7 @@ spring:
   config:
     import: optional:file:.env[.properties]
   application:
-    name: rest-api
+    name: rest_api
   datasource:
     url: jdbc:h2:file:./data/rest_api;AUTO_SERVER=TRUE
     username: rest_user

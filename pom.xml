@@ -11,8 +11,8 @@
     <groupId>ee.lio</groupId>
     <artifactId>rest-api</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>rest-api</name>
-    <description>rest-api</description>
+    <name>rest_api</name>
+    <description>rest_api</description>
     <url/>
     <licenses>
         <license/>
