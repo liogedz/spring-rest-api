@@ -28,18 +28,18 @@ A comprehensive REST API demonstrating Spring Boot best practices, authenticatio
 
 ### Authentication
 
-- `POST /api/v1/auth/signup` - Register new user
-- `POST /api/v1/auth/login` - Login (triggers 2FA email)
-- `POST /api/v1/auth/verify` - Verify code and receive JWT token
+- `POST /api/auth/signup` - Register new user
+- `POST /api/auth/login` - Login (triggers 2FA email)
+- `POST /api/auth/verify` - Verify code and receive JWT token
 
 ### Users (Protected)
 
-- `GET /api/v1/users` - Get all users (ADMIN only)
-- `GET /api/v1/users/{id}` - Get user by ID
-- `GET /api/v1/users/current-user` - Get current user
-- `PUT /api/v1/users/{id}` - Full update (own account or ADMIN)
-- `PATCH /api/v1/users/{id}` - Partial update (own account or ADMIN)
-- `DELETE /api/v1/users/{id}` - Delete user (own account or ADMIN)
+- `GET /api/users` - Get all users (ADMIN only)
+- `GET /api/users/{id}` - Get user by ID
+- `GET /api/users/current-user` - Get current user
+- `PUT /api/users/{id}` - Full update (own account or ADMIN)
+- `PATCH /api/users/{id}` - Partial update (own account or ADMIN)
+- `DELETE /api/users/{id}` - Delete user (own account or ADMIN)
 
 ## Prerequisites
 
@@ -165,7 +165,7 @@ Import the collection: [postman_collection.json](/docs/postman_collection.json)
 
 3. **Check your email** for 2FA code
 
-4. **Verify 2FA**: `POST /api/v1/auth/verify`
+4. **Verify 2FA**: `POST /api/auth/verify`
 
 ```json
 {

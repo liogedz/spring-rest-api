@@ -23,12 +23,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("api/v1/auth")
+@RequestMapping("api/auth")
 public class AuthController {
 
     private final UserService userService;
@@ -97,11 +96,8 @@ public class AuthController {
         String identifier = request.identifier();
         String submittedCode = request.code();
 
-        if (!twoFactorService.validateCode(identifier,
-                submittedCode)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
-                    "Invalid verification code");
-        }
+        twoFactorService.validateCode(identifier,
+                submittedCode);
         twoFactorService.clearCode(identifier);
 
         User user = userService.getUserByIdentifier(identifier);

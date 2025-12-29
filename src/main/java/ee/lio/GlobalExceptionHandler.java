@@ -1,15 +1,13 @@
 package ee.lio;
 
 import ee.lio.dto.response.ApiResponse;
-import ee.lio.exceptions.DataNotValidatedException;
-import ee.lio.exceptions.ExistingUsernameException;
-import ee.lio.exceptions.ForbiddenException;
-import ee.lio.exceptions.ResourceNotFoundException;
+import ee.lio.exceptions.*;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -40,6 +38,20 @@ public class GlobalExceptionHandler {
                 .body(new ApiResponse("Action forbidden",
                         ex.getMessage()));
 
+    }
+
+    @ExceptionHandler(InvalidVerificationCodeException.class)
+    public ResponseEntity<ApiResponse> handleInvalidCode(InvalidVerificationCodeException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new ApiResponse("Invalid verification code",
+                        ex.getMessage()));
+    }
+
+    @ExceptionHandler(InvalidIdentifierException.class)
+    public ResponseEntity<ApiResponse> handleInvalidIdentifier(InvalidIdentifierException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new ApiResponse("Invalid identifier",
+                        ex.getMessage()));
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)

@@ -7,6 +7,7 @@ import ee.lio.dto.request.UpdateRequest;
 import ee.lio.dto.response.UserResponse;
 import ee.lio.exceptions.ExistingUsernameException;
 import ee.lio.exceptions.ForbiddenException;
+import ee.lio.exceptions.InvalidIdentifierException;
 import ee.lio.exceptions.ResourceNotFoundException;
 import ee.lio.model.Role;
 import ee.lio.model.User;
@@ -73,15 +74,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserByIdentifier(String identifier) {
-        User returnValue;
-        Optional<User> userOptional = userRepository.findByNameOrEmail(identifier,
-                identifier);
-        if (userOptional.isPresent()) {
-            returnValue = userOptional.get();
-        } else {
-            throw new UsernameNotFoundException("User not found with entered credential: " + identifier);
-        }
-        return returnValue;
+        return userRepository.findByNameOrEmail(identifier,
+                        identifier)
+                .orElseThrow(() ->
+                        new InvalidIdentifierException(
+                                "User not found with entered credential: " + identifier
+                        ));
     }
 
     @Override

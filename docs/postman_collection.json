@@ -47,7 +47,7 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{base_url}}/api/v1/users",
+          "raw": "{{base_url}}/api/users",
           "host": [
             "{{base_url}}"
           ],
@@ -101,7 +101,7 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{base_url}}/api/v1/users/1",
+          "raw": "{{base_url}}/api/users/1",
           "host": [
             "{{base_url}}"
           ],
@@ -156,7 +156,7 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{base_url}}/api/v1/users/current-user",
+          "raw": "{{base_url}}/api/users/current-user",
           "host": [
             "{{base_url}}"
           ],
@@ -202,7 +202,7 @@
           }
         },
         "url": {
-          "raw": "{{base_url}}/api/v1/auth/signup",
+          "raw": "{{base_url}}/api/auth/signup",
           "host": [
             "{{base_url}}"
           ],
@@ -248,7 +248,7 @@
           }
         },
         "url": {
-          "raw": "{{base_url}}/api/v1/auth/login",
+          "raw": "{{base_url}}/api/auth/login",
           "host": [
             "{{base_url}}"
           ],
@@ -292,7 +292,7 @@
           }
         },
         "url": {
-          "raw": "{{base_url}}/api/v1/auth/verify",
+          "raw": "{{base_url}}/api/auth/verify",
           "host": [
             "{{base_url}}"
           ],
@@ -356,7 +356,7 @@
           }
         },
         "url": {
-          "raw": "{{base_url}}/api/v1/users/1",
+          "raw": "{{base_url}}/api/users/1",
           "host": [
             "{{base_url}}"
           ],
@@ -420,7 +420,7 @@
           }
         },
         "url": {
-          "raw": "{{base_url}}/api/v1/users/1",
+          "raw": "{{base_url}}/api/users/1",
           "host": [
             "{{base_url}}"
           ],
@@ -484,7 +484,7 @@
           }
         },
         "url": {
-          "raw": "{{base_url}}/api/v1/users/1",
+          "raw": "{{base_url}}/api/users/1",
           "host": [
             "{{base_url}}"
           ],

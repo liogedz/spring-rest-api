@@ -41,8 +41,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         authorize -> authorize
 
-                                .requestMatchers("/api/v1/auth/**").anonymous()
-                                .requestMatchers("/api/v1/users/loggedIn").permitAll()
+                                .requestMatchers("/api/auth/**").anonymous()
                                 .anyRequest().authenticated()
 
                 ).addFilterBefore(jwtRequestFilter,
