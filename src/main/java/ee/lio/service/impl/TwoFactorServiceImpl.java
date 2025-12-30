@@ -1,7 +1,6 @@
 package ee.lio.service.impl;
 
 import ee.lio.exceptions.InvalidVerificationCodeException;
-import ee.lio.model.User;
 import ee.lio.service.TwoFactorService;
 import ee.lio.service.UserService;
 import org.springframework.stereotype.Service;

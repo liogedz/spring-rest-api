@@ -1,7 +1,6 @@
 package ee.lio.controller;
 
 import ee.lio.dto.request.PatchRequest;
-import ee.lio.dto.request.SignupRequest;
 import ee.lio.dto.request.UpdateRequest;
 import ee.lio.dto.response.ApiResponse;
 import ee.lio.dto.response.UserResponse;

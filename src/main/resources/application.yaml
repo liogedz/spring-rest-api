@@ -31,3 +31,4 @@ spring:
             enable: true
 
 jwtSecret: ${JWT_SECRET}
+jwtExpirationMs: ${JWT_EXP}
