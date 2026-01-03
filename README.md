@@ -15,7 +15,7 @@ A comprehensive REST API demonstrating Spring Boot best practices, authenticatio
 
 ## Tech Stack
 
-- Java 21
+- Java 21 or later
 - Spring Boot 4.x
 - Spring Security
 - Spring Data JPA
