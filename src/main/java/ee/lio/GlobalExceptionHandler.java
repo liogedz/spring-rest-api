@@ -12,49 +12,43 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataNotValidatedException.class)
-    public ResponseEntity<ApiResponse> handleValidationException(DataNotValidatedException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse("Validation failed",
-                ex.getMessage()));
+    public ResponseEntity<String> handleValidationException(DataNotValidatedException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
     @ExceptionHandler(ExistingUsernameException.class)
-    public ResponseEntity<ApiResponse> handleExistingUsername(ExistingUsernameException ex) {
+    public ResponseEntity<String> handleExistingUsername(ExistingUsernameException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(new ApiResponse("Already in use",
-                        ex.getMessage()));
+                .body(ex.getMessage());
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ApiResponse> handleResourceNotFoundException(ResourceNotFoundException ex) {
+    public ResponseEntity<String> handleResourceNotFoundException(ResourceNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new ApiResponse("Not found",
-                        ex.getMessage()));
+                .body(ex.getMessage());
     }
 
     @ExceptionHandler(ForbiddenException.class)
-    public ResponseEntity<ApiResponse> handleForbidden(ForbiddenException ex) {
+    public ResponseEntity<String> handleForbidden(ForbiddenException ex) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                .body(new ApiResponse("Action forbidden",
-                        ex.getMessage()));
+                .body(ex.getMessage());
 
     }
 
     @ExceptionHandler(InvalidVerificationCodeException.class)
-    public ResponseEntity<ApiResponse> handleInvalidCode(InvalidVerificationCodeException ex) {
+    public ResponseEntity<String> handleInvalidCode(InvalidVerificationCodeException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(new ApiResponse("Invalid verification code",
-                        ex.getMessage()));
+                .body(ex.getMessage());
     }
 
     @ExceptionHandler(InvalidIdentifierException.class)
-    public ResponseEntity<ApiResponse> handleInvalidIdentifier(InvalidIdentifierException ex) {
+    public ResponseEntity<String> handleInvalidIdentifier(InvalidIdentifierException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(new ApiResponse("Invalid identifier",
-                        ex.getMessage()));
+                .body(ex.getMessage());
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<ApiResponse> handleDataIntegrityViolation(
+    public ResponseEntity<String> handleDataIntegrityViolation(
             DataIntegrityViolationException ex) {
 
         String message = "Data integrity violation.";
@@ -64,10 +58,8 @@ public class GlobalExceptionHandler {
         } else if (ex.getMostSpecificCause().getMessage().contains("user_email_unique")) {
             message = "Email already taken.";
         }
-
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
-                .body(new ApiResponse(message,
-                        null));
+                .body(message);
     }
 }

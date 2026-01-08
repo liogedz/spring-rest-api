@@ -13,12 +13,11 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     Optional<User> findByNameOrEmail(String name,
                                      String email);
 
-    void deleteById(Integer id);
-
     Optional<User> findByNameAndIdNot(String name,
                                       Integer id);
 
     Optional<User> findByEmailAndIdNot(String email,
                                        Integer id);
 
+    void deleteById(Integer id);
 }
