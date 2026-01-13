@@ -21,7 +21,7 @@ Content-Type: application/json
 
 {
   "name": "Alex",
-  "email": "alex@alex.ee",
+  "email": "alex@alex.net",
   "password": "12345678",
   "role": "USER"
 }
@@ -43,7 +43,7 @@ Content-Type: application/json
 
 {
   "identifier": "Alex",
-  "code": "809339"
+  "code": "955406"
 }
 
 > {%
@@ -57,7 +57,7 @@ Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 {
-  "name": "Alex",
+  "name": "Aleksei",
   "email": "alex@alex.net",
   "password": "12345678",
   "role": "USER"
@@ -65,12 +65,12 @@ Content-Type: application/json
 
 ###
 # @name update (patch)
-PATCH http://localhost:8080/api/users/2
+PATCH http://localhost:8080/api/users/1
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 {
-  "role": "USER"
+  "name": "Aleksei"
 }
 
 ###

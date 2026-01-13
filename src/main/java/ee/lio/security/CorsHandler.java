@@ -2,7 +2,6 @@ package ee.lio.security;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.jspecify.annotations.NonNull;
-import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -14,7 +13,7 @@ import java.util.List;
 public class CorsHandler implements CorsConfigurationSource {
 
     @Override
-    public @Nullable CorsConfiguration getCorsConfiguration(@NonNull HttpServletRequest request) {
+    public CorsConfiguration getCorsConfiguration(@NonNull HttpServletRequest request) {
         CorsConfiguration returnValue = new CorsConfiguration();
         returnValue.setAllowedOriginPatterns(List.of("*"));
         returnValue.setAllowCredentials(true);

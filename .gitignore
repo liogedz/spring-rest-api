@@ -34,3 +34,10 @@ build/
 
 ### .env ###
 .env
+
+# Spring Boot / Application
+/build/
+/!src/main/resources/
+/!src/test/resources/
+*.h2.db
+*.mv.db
