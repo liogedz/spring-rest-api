@@ -13,12 +13,14 @@ import ee.lio.model.Role;
 import ee.lio.model.User;
 import ee.lio.repository.UserRepository;
 import ee.lio.service.UserService;
+import jakarta.transaction.Transactional;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.event.TransactionalEventListener;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
@@ -39,6 +41,7 @@ public class UserServiceImpl implements UserService {
         this.userResponseConverter = userResponseConverter;
     }
 
+    @Transactional
     @Override
     public UserResponse createUser(SignupRequest request) {
 
@@ -95,6 +98,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + currentUserName));
     }
 
+    @Transactional
     @Override
     public UserResponse updateUser(UpdateRequest request,
                                    Integer id) {
@@ -120,7 +124,7 @@ public class UserServiceImpl implements UserService {
         return userResponseConverter.userToUserResponse(user);
     }
 
-
+    @Transactional
     @Override
     public UserResponse patchUser(PatchRequest request,
                                   Integer id) {
@@ -153,7 +157,7 @@ public class UserServiceImpl implements UserService {
         return userResponseConverter.userToUserResponse(user);
     }
 
-
+    @Transactional
     @Override
     public void deleteUser(Integer id) {
         Optional<User> optUser = userRepository.findUserById(id);
