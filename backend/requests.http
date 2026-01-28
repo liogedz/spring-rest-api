@@ -23,7 +23,7 @@ Content-Type: application/json
   "name": "Alex",
   "email": "alex@alex.net",
   "password": "12345678",
-  "role": "USER"
+  "role": "ADMIN"
 }
 
 ###
@@ -43,7 +43,7 @@ Content-Type: application/json
 
 {
   "identifier": "Alex",
-  "code": "955406"
+  "code": "425531"
 }
 
 > {%

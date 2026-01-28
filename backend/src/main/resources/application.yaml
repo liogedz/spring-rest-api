@@ -2,17 +2,18 @@ server:
   port: 8080
 spring:
   config:
-    import: optional:file:.env[.properties]
+    import:
+      - optional:classpath:.env[.properties]
   application:
     name: rest_api
   datasource:
-    url: jdbc:h2:file:./data/rest_api;AUTO_SERVER=TRUE
+    url: jdbc:h2:file:./backend/data/rest_api;AUTO_SERVER=TRUE
     username: rest_user
     password: password
     driver-class-name: org.h2.Driver
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     #  jpa:
     #    hibernate:
     #      ddl-auto: update
