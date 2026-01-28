@@ -48,6 +48,7 @@ build/
 /!src/test/resources/
 *.h2.db
 *.mv.db
+*.trace.db
 
 # Compiled output
 /dist
