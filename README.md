@@ -1,6 +1,7 @@
 # JAVA SPRINGBOOT CRUD REST API
 
 A comprehensive REST API demonstrating Spring Boot best practices, authentication, and CRUD operations.
+branch `oauth2` work in progress changing to Oauth2, adding Angular Frontend
 
 ## Features
 
@@ -104,7 +105,8 @@ The API will be available at: `http://localhost:8080`
 
 ## Database Configuration
 
-The application uses H2 in-memory database. Configuration is in [application.yaml](src/main/resources/application.yaml).
+The application uses H2 in-memory database. Configuration is
+in [application.yaml](backend/src/main/resources/application.yaml).
 
 **Development mode** (clears data on shutdown):
 
@@ -131,7 +133,7 @@ jpa:
 
 ### Using IntelliJ HTTP Client
 
-Use [requests.http](requests.http) file:
+Use [requests.http](backend/requests.http) file:
 
 1. Replace placeholder emails with your real email address
 2. Execute requests in order (signup → login → verify → protected endpoints)
@@ -139,7 +141,7 @@ Use [requests.http](requests.http) file:
 
 ### Using Postman
 
-Import the collection: [postman_collection.json](/docs/postman_collection.json)
+Import the collection: [postman_collection.json](/backend/docs/postman_collection.json)
 
 ### Example Flow
 
