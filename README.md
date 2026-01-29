@@ -1,7 +1,8 @@
 # JAVA SPRINGBOOT CRUD REST API
 
 A comprehensive REST API demonstrating Spring Boot best practices, authentication, and CRUD operations.
-branch `oauth2` work in progress changing to Oauth2, adding Angular Frontend
+
+# branch `oauth2` work in progress changing to Oauth2, adding frontend Angular
 
 ## Features
 
