@@ -16,7 +16,7 @@
             Name
           </label>
           <div class="mt-1">
-            <input id="name" name="name" type="text" required
+            <input [formField]="regForm.name" id="name" type="text"
                    class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 dark:text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                    placeholder="Enter your name">
           </div>
@@ -26,7 +26,7 @@
             Email address
           </label>
           <div class="mt-1">
-            <input id="email" name="email" type="email" required
+            <input [formField]="regForm.email" id="email" type="email"
                    class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 dark:text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                    placeholder="Enter your email address">
           </div>
@@ -36,7 +36,7 @@
             Role
           </label>
           <div class="mt-1">
-            <input id="role" name="role" type="text" required
+            <input [formField]="regForm.role" id="role" type="text"
                    class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 dark:text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                    placeholder="Enter your role">
           </div>
@@ -46,7 +46,7 @@
             Password
           </label>
           <div class="mt-1">
-            <input id="password" name="password" type="password" required
+            <input id="password" type="password"
                    class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 dark:text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                    placeholder="Enter your password">
           </div>
@@ -56,7 +56,7 @@
             Confirm password
           </label>
           <div class="mt-1">
-            <input id="password_confirm" name="password_confirm" type="password" required
+            <input id="password_confirm" type="password"
                    class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 dark:text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                    placeholder="Confirm your password">
           </div>

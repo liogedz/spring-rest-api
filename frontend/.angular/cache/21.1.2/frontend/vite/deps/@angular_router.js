@@ -1,4 +1,7 @@
 import {
+  Title
+} from "./chunk-7Z2UP4D6.js";
+import {
   HashLocationStrategy,
   Location,
   LocationStrategy,
@@ -6,9 +9,8 @@ import {
   PRECOMMIT_HANDLER_SUPPORTED,
   PathLocationStrategy,
   PlatformNavigation,
-  Title,
   ViewportScroller
-} from "./chunk-J6ZRBMSU.js";
+} from "./chunk-WJDWJ2WP.js";
 import {
   LOCATION_INITIALIZED,
   PlatformLocation
