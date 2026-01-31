@@ -4,6 +4,9 @@ import {form, FormField, required, email, minLength, maxLength, validate} from '
 import {FormsModule} from '@angular/forms';
 import {RegData} from '@common/reg-data';
 import {AuthService} from '@services/auth-service';
+import {HttpErrorResponse} from '@angular/common/http';
+import {Router} from '@angular/router';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-register',
@@ -15,7 +18,11 @@ import {AuthService} from '@services/auth-service';
 export class Register {
   userRoles: string[] = Object.values(Role);
 
-  constructor(private authService: AuthService) {
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private snackBar: MatSnackBar
+  ) {
   }
 
   regModel = signal<RegData>({
@@ -50,13 +57,6 @@ export class Register {
     });
   });
 
-  onSubmit() {
-    const regData = this.regModel();
-    if (this.hasRegFormErrors()) return;
-    console.log(regData);
-    this.authService.registerUser(regData);
-  }
-
   hasRegFormErrors = computed(() =>
     this.regForm.name().invalid() ||
     this.regForm.email().invalid() ||
@@ -77,4 +77,34 @@ export class Register {
     this.hasRegFormErrors() && this.regFormTouched()
   );
 
+  onSubmit() {
+    if (this.hasRegFormErrors()) return;
+
+    this.authService.registerUser(this.regModel())
+      .subscribe({
+        next: (response) => {
+          const {data, message} = response;
+          this.snackBar.open(
+            `Congratulations ${data.name}! ${message}`,
+            'ok',
+            {
+              duration: 3000,
+              panelClass: ['success-snackbar']
+            });
+          this.router.navigate(["/login"]);
+        },
+        error: (error: HttpErrorResponse) => {
+          const errorMsg = error.status === 409
+            ? "Username already exist!"
+            : "User registration failed!";
+          this.snackBar.open(
+            errorMsg,
+            'Close',
+            {
+              duration: 3000,
+              panelClass: ['error-snackbar']
+            });
+        }
+      });
+  }
 }
