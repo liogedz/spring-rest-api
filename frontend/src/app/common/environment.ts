@@ -1,4 +1,4 @@
-export const ERNVIRONMENT = {
+export const ENVIRONMENT = {
   production: false,
-  apiUrl: '/api'
+  apiUrl: 'http://localhost:8080/api'
 }

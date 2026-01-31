@@ -3,6 +3,7 @@ import {Role} from '@common/role';
 import {form, FormField, required, email, minLength, maxLength, validate} from '@angular/forms/signals';
 import {FormsModule} from '@angular/forms';
 import {RegData} from '@common/reg-data';
+import {AuthService} from '@services/auth-service';
 
 @Component({
   selector: 'app-register',
@@ -13,6 +14,9 @@ import {RegData} from '@common/reg-data';
 
 export class Register {
   userRoles: string[] = Object.values(Role);
+
+  constructor(private authService: AuthService) {
+  }
 
   regModel = signal<RegData>({
     name: "",
@@ -50,6 +54,7 @@ export class Register {
     const regData = this.regModel();
     if (this.hasRegFormErrors()) return;
     console.log(regData);
+    this.authService.registerUser(regData);
   }
 
   hasRegFormErrors = computed(() =>
