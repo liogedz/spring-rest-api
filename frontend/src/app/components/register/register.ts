@@ -1,16 +1,8 @@
-import {Component, signal} from '@angular/core';
+import {Component, computed, signal} from '@angular/core';
 import {Role} from '@common/role';
 import {form, FormField, required, email, minLength, maxLength, validate} from '@angular/forms/signals';
 import {FormsModule} from '@angular/forms';
-
-interface RegData {
-  name: string;
-  email: string;
-  password: string;
-  confirm_password: string;
-  role: Role;
-  remember: boolean;
-}
+import {RegData} from '@common/reg-data';
 
 @Component({
   selector: 'app-register',
@@ -21,7 +13,6 @@ interface RegData {
 
 export class Register {
   userRoles: string[] = Object.values(Role);
-
 
   regModel = signal<RegData>({
     name: "",
@@ -57,6 +48,28 @@ export class Register {
 
   onSubmit() {
     const regData = this.regModel();
+    if (this.hasRegFormErrors()) return;
     console.log(regData);
   }
+
+  hasRegFormErrors = computed(() =>
+    this.regForm.name().invalid() ||
+    this.regForm.email().invalid() ||
+    this.regForm.password().invalid() ||
+    this.regForm.role().invalid() ||
+    this.regForm.confirm_password().invalid()
+  );
+
+  regFormTouched = computed(() =>
+    this.regForm.name().touched() ||
+    this.regForm.email().touched() ||
+    this.regForm.password().touched() ||
+    this.regForm.role().touched() ||
+    this.regForm.confirm_password().touched()
+  );
+
+  isRegDisabled = computed(() =>
+    this.hasRegFormErrors() && this.regFormTouched()
+  );
+
 }

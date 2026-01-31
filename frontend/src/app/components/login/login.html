@@ -16,15 +16,23 @@
 
   <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
     <div class="bg-white dark:bg-gray-700 py-8 px-4 shadow sm:rounded-lg sm:px-10">
-      <form class="space-y-6" action="#" method="POST">
+      <form class="space-y-6" (ngSubmit)="onSubmit()">
         <div>
           <label for="email" class="block text-sm font-medium text-gray-700 dark:text-white">
             Email address
           </label>
           <div class="mt-1">
-            <input id="email" name="email" type="email" required
+            <input [formField]="loginForm.identifier" id="identifier" type="text"
                    class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 dark:text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                   placeholder="Enter your email address">
+                   placeholder="Enter your name or email address">
+            @if (loginForm.identifier().touched() && loginForm.identifier().invalid()) {
+              <p class="error text-red-700">Identifier not valid: </p>
+              <ul>
+                @for (error of loginForm.identifier().errors(); track error.message) {
+                  <li class="text-red-700">{{ error.message }}</li>
+                }
+              </ul>
+            }
           </div>
         </div>
 
@@ -33,9 +41,17 @@
             Password
           </label>
           <div class="mt-1">
-            <input id="password" name="password" type="password" autocomplete="current-password" required
+            <input [formField]="loginForm.password" id="password" type="password"
                    class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 dark:text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                    placeholder="Enter your password">
+            @if (loginForm.password().touched() && loginForm.password().invalid()) {
+              <p class="error text-red-700">Password not valid: </p>
+              <ul>
+                @for (error of loginForm.password().errors(); track error.message) {
+                  <li class="text-red-700">{{ error.message }}</li>
+                }
+              </ul>
+            }
           </div>
         </div>
 
@@ -56,9 +72,12 @@
         </div>
 
         <div>
-          <button type="submit"
-                  class="cursor-pointer group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-
+          <button type="submit" [disabled]="isLoginDisabled()"
+                  class="
+                  cursor-pointer group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md
+                   text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500
+                    disabled:opacity-50 disabled:cursor-not-allowed
+                        ">
             Sign in
           </button>
         </div>
