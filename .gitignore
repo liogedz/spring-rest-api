@@ -1,76 +1,55 @@
-HELP.md
-target/
-.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+# === Node / frontend ===
+frontend/node_modules/
+frontend/dist/
+frontend/out-tsc/
+frontend/.angular/
+frontend/tmp/
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-
-# IDEs and editors
-.idea/
-.c9/
-*.launch
-.settings/
-*.sublime-workspace
-
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-### VS Code ###
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-!.vscode/mcp.json
-.history/*
-
-### .env ###
-.env
-
-# Spring Boot / Application
-/build/
-/!src/main/resources/
-/!src/test/resources/
+# === Backend / Java / Maven ===
+backend/target/
 *.h2.db
 *.mv.db
 *.trace.db
+!/src/main/resources/
+!/src/test/resources/
+.mvn/wrapper/maven-wrapper.jar
 
-# Compiled output
-/dist
-/tmp
-/out-tsc
-/bazel-out
+# === IDEs / Editors ===
+.idea/
+.vscode/
+*.sublime-workspace
+*.launch
+*.classpath
+*.project
+.settings/
+.apt_generated
+.factorypath
+.springBeans
+.sts4-cache
+.nb-gradle/
+nbproject/private/
+nbbuild/
+dist/
+nbdist/
+*.iml
 
-# Node
-/node_modules
-npm-debug.log
-yarn-error.log
+# === Logs ===
+npm-debug.log*
+yarn-error.log*
+*.log
 
-# Miscellaneous
-/.angular/cache
+# === Coverage / temp files ===
+coverage/
+connect.lock
 .sass-cache/
-/connect.lock
-/coverage
-/libpeerconnection.log
-testem.log
-/typings
 __screenshots__/
+libpeerconnection.log
+testem.log
+/tmp/
 
-# System files
+# === OS files ===
 .DS_Store
 Thumbs.db
+
+# === Environment files ===
+.env

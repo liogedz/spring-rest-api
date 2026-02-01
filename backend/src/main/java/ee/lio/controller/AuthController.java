@@ -12,7 +12,6 @@ import ee.lio.service.EmailService;
 import ee.lio.service.TwoFactorService;
 import ee.lio.service.UserService;
 import ee.lio.utils.JwtUtil;
-import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
