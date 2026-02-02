@@ -13,9 +13,9 @@
       </a>
     </p>
   </div>
-
   <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
     <div class="bg-white dark:bg-gray-700 py-8 px-4 shadow sm:rounded-lg sm:px-10">
+      <!--LOGIN-->
       @if (!show2FA()) {
         <form class="space-y-6" (ngSubmit)="onLoginSubmit()">
           <div>
@@ -54,8 +54,6 @@
               }
             </div>
           </div>
-
-
           <div class="flex items-center justify-between">
             <div class="flex items-center">
               <input id="remember_me" name="remember_me" type="checkbox"
@@ -64,14 +62,12 @@
                 Remember me
               </label>
             </div>
-
             <div class="text-sm">
               <a href="#" class="font-medium text-blue-600 hover:text-blue-500">
                 Forgot your password?
               </a>
             </div>
           </div>
-
           <div>
             <button type="submit" [disabled]="isLoginDisabled()"
                     class="
@@ -83,9 +79,8 @@
             </button>
           </div>
         </form>
-
+        <!--LOGIN VERIFY-->
       } @else {
-
         <form class="space-y-6" (ngSubmit)="onTwoFASubmit()">
           <div>
             <label for="identifier" class="block text-sm font-medium text-gray-700 dark:text-white">
@@ -114,7 +109,6 @@
                 </ul>
               }
             </div>
-
           </div>
           <div>
             <button type="submit" [disabled]="isVerifyDisabled()"
@@ -129,7 +123,6 @@
         </form>
       }
       <div class="mt-6">
-
         <div class="relative">
           <div class="absolute inset-0 flex items-center">
             <div class="w-full border-t border-gray-300"></div>
@@ -140,7 +133,6 @@
                         </span>
           </div>
         </div>
-
         <div class="mt-6 grid grid-cols-2 gap-3">
           <div>
             <a href="#"

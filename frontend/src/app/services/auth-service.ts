@@ -1,12 +1,10 @@
 import {Injectable} from '@angular/core';
 import {ENVIRONMENT} from '@common/environment';
-import {HttpClient, HttpErrorResponse} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {RegData} from '@common/reg-data';
 import {ApiResponse} from '@common/api-response';
-import {MatSnackBar} from '@angular/material/snack-bar';
 import {Router} from '@angular/router';
 import {LoginData} from '@common/login-data';
-import {User} from '@common/user';
 import {VerifyData} from '@common/verify-data';
 
 @Injectable({
@@ -19,6 +17,20 @@ export class AuthService {
     private http: HttpClient,
     private router: Router
   ) {
+  }
+
+  logout(): void {
+    localStorage.clear();
+    this.router.navigate(["/login"]);
+  }
+
+  isAuthenticated(): boolean {
+    let returnValue = false;
+    const authToken = localStorage.getItem("authToken");
+    if (authToken) {
+      returnValue = true;
+    }
+    return returnValue;
   }
 
   registerUser(regData: RegData) {

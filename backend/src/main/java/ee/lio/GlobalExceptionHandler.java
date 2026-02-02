@@ -1,6 +1,5 @@
 package ee.lio;
 
-import ee.lio.dto.response.ApiResponse;
 import ee.lio.exceptions.*;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;

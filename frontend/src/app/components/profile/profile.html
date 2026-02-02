@@ -1,1 +1,167 @@
-<p>profile works!</p>
+<div
+  class="min-h-screen bg-gray-100 dark:bg-gray-900
+         text-gray-900 dark:text-gray-100
+         flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+  <div class="sm:mx-auto sm:w-full sm:max-w-md">
+    <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-gray-100">
+      User Profile
+    </h2>
+  </div>
+  <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+    <div class="bg-white dark:bg-gray-700 py-8 px-4 shadow sm:rounded-lg sm:px-10">
+      <dl class="sm:divide-y sm:divide-gray-200">
+        <div class="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+          <dt class="text-sm font-medium text-gray-500">
+            Full name
+          </dt>
+          <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+            {{ profileModel().name }}
+          </dd>
+        </div>
+        <div class="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+          <dt class="text-sm font-medium text-gray-500">
+            Email address
+          </dt>
+          <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+            {{ profileModel().email }}
+          </dd>
+        </div>
+        <div class="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+          <dt class="text-sm font-medium text-gray-500">
+            User Role
+          </dt>
+          <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+            {{ profileModel().role }}
+          </dd>
+        </div>
+      </dl>
+      <div>
+        <button type="submit" (click)="modifyingUser()"
+                class="
+                    cursor-pointer group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md
+                    text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500
+                      disabled:opacity-50 disabled:cursor-not-allowed
+                        ">
+          {{ changeUser() ? 'No changes' : 'Modify' }}
+        </button>
+      </div>
+
+      @if (changeUser()) {
+        <form class="space-y-6" (ngSubmit)="updateUser()">
+          <div>
+            <label for="name" class="block text-sm font-medium text-gray-700 dark:text-white">
+              Name
+            </label>
+            <div class="mt-1">
+              <input [formField]="profileForm.name" id="name" type="text"
+                     class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 dark:text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                     placeholder="Enter your name">
+
+              @if (profileForm.name().touched() && profileForm.name().invalid()) {
+                <p class="error text-red-700"> Name not valid: </p>
+                <ul>
+                  @for (error of profileForm.name().errors(); track error.message) {
+                    <li class="text-red-700">{{ error.message }}</li>
+                  }
+                </ul>
+              }
+            </div>
+          </div>
+          <div>
+            <label for="email" class="block text-sm font-medium text-gray-700 dark:text-white">
+              Email address
+            </label>
+            <div class="mt-1">
+              <input [formField]="profileForm.email" id="email" type="email"
+                     class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 dark:text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                     placeholder="Enter your email address">
+
+              @if (profileForm.email().touched() && profileForm.email().invalid()) {
+                <p class="error text-red-700"> Email not valid: </p>
+                <ul>
+                  @for (error of profileForm.email().errors(); track error.message) {
+                    <li class="text-red-700">{{ error.message }}</li>
+                  }
+                </ul>
+              }
+            </div>
+          </div>
+          <div>
+            <label for="role" class="block text-sm font-medium text-gray-700 dark:text-white">
+              Role
+            </label>
+            <div class="mt-1">
+              <select [formField]="profileForm.role" id="role"
+                      class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 dark:text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+              >
+                <option class="appearance-none rounded-md relative block w-full px-3 py-2 bg-white dark:bg-gray-700"
+                        value="">Select role
+                </option>
+                @for (role of userRoles; track role) {
+                  <option class="appearance-none rounded-md relative block w-full px-3 py-2 bg-white dark:bg-gray-700"
+                          [value]="role">{{ role }}
+                  </option>
+                }
+              </select>
+              @if (profileForm.role().invalid()) {
+                <p class="error text-red-700"> Role not valid: </p>
+                <ul>
+                  @for (error of profileForm.role().errors(); track error.message) {
+                    <li class="text-red-700">{{ error.message }}</li>
+                  }
+                </ul>
+              }
+            </div>
+          </div>
+          <div>
+            <label for="password" class="block text-sm font-medium text-gray-700 dark:text-white">
+              Password
+            </label>
+            <div class="mt-1">
+              <input [formField]="profileForm.password" id="password" type="password"
+                     class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 dark:text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                     placeholder="Enter your password">
+              @if (profileForm.password().touched() && profileForm.password().invalid()) {
+                <p class="error text-red-700"> Password not valid: </p>
+                <ul>
+                  @for (error of profileForm.password().errors(); track error.message) {
+                    <li class="text-red-700">{{ error.message }}</li>
+                  }
+                </ul>
+              }
+            </div>
+          </div>
+          <div>
+            <label for="password_confirm" class="block text-sm font-medium text-gray-700 dark:text-white">
+              Confirm password
+            </label>
+            <div class="mt-1">
+              <input [formField]="profileForm.confirm_password" id="password_confirm" type="password"
+                     class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 dark:text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                     placeholder="Confirm your password">
+              @if (profileForm.confirm_password().touched() && profileForm.confirm_password().invalid()) {
+                <p class="error text-red-700"> Password not valid: </p>
+                <ul>
+                  @for (error of profileForm.confirm_password().errors(); track error.message) {
+                    <li class="text-red-700">{{ error.message }}</li>
+                  }
+                </ul>
+              }
+            </div>
+          </div>
+
+          <div>
+            <button type="submit" [disabled]="isEditFormDisabled()"
+                    class="
+                    cursor-pointer group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md
+                    text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500
+                      disabled:opacity-50 disabled:cursor-not-allowed
+                        ">
+              Submit
+            </button>
+          </div>
+        </form>
+      }
+    </div>
+  </div>
+</div>
