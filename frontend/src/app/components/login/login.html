@@ -27,9 +27,8 @@
                      class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 dark:text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                      placeholder="Enter your name or email address">
               @if (loginForm.identifier().touched() && loginForm.identifier().invalid()) {
-                <p class="error text-red-700">Identifier not valid: </p>
                 <ul>
-                  @for (error of loginForm.identifier().errors(); track error.message) {
+                  @for (error of loginForm.identifier().errors(); track $index) {
                     <li class="text-red-700">{{ error.message }}</li>
                   }
                 </ul>
@@ -45,9 +44,8 @@
                      class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 dark:text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                      placeholder="Enter your password">
               @if (loginForm.password().touched() && loginForm.password().invalid()) {
-                <p class="error text-red-700">Password not valid: </p>
                 <ul>
-                  @for (error of loginForm.password().errors(); track error.message) {
+                  @for (error of loginForm.password().errors(); track $index) {
                     <li class="text-red-700">{{ error.message }}</li>
                   }
                 </ul>
@@ -101,9 +99,8 @@
                      class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 dark:text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                      placeholder="Enter verification code">
               @if (verifyForm.code().touched() && verifyForm.code().invalid()) {
-                <p class="error text-red-700">Code not valid: </p>
                 <ul>
-                  @for (error of verifyForm.code().errors(); track error.message) {
+                  @for (error of verifyForm.code().errors(); track $index) {
                     <li class="text-red-700">{{ error.message }}</li>
                   }
                 </ul>

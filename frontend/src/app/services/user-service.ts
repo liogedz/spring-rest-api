@@ -3,7 +3,7 @@ import {ENVIRONMENT} from "@common/environment";
 import {HttpClient} from '@angular/common/http';
 import {ProfileData} from '@common/profile-data';
 import {Role} from '@common/role';
-
+import {ApiResponse} from '@common/api-response';
 
 @Injectable({
   providedIn: 'root',
@@ -26,5 +26,8 @@ export class UserService {
     };
   }
 
+  patchUser(profileData: ProfileData) {
+    return this.http.patch<ApiResponse>(`${this.apiUrl}/${profileData.id}`, profileData);
+  }
 
 }

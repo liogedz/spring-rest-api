@@ -56,6 +56,7 @@ public class UserController {
     public ResponseEntity<ApiResponse> patchUser(@RequestBody
                                                  PatchRequest request,
                                                  @PathVariable Integer id) {
+        System.out.println(request.toString());
         UserResponse patchedUser = userService.patchUser(request,
                 id);
         return ResponseEntity.ok(new ApiResponse("User with id: " + id + " patched successfully",

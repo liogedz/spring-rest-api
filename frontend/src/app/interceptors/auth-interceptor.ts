@@ -15,16 +15,15 @@ export class AuthInterceptor implements HttpInterceptor {
   private router = inject(Router);
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const authToken = localStorage.getItem('authToken')?.trim();
+    const authToken = localStorage.getItem('authToken');
 
-    // Skip all /api/auth/** requests (login, register, etc.)
+
     if (req.url.includes('/api/auth/')) {
       return next.handle(req).pipe(
         catchError((error: HttpErrorResponse) => this.handle401(error))
       );
     }
 
-    // Clone request with Authorization header if token exists
     let authReq = req;
     if (authToken) {
       authReq = req.clone({

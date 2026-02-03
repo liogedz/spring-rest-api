@@ -1,14 +1,15 @@
 import {Component, computed, OnInit, signal} from '@angular/core';
-import {FormsModule} from "@angular/forms";
 import {ProfileData} from '@common/profile-data';
 import {Role} from '@common/role';
-import {email, form, FormField, maxLength, minLength, readonly, required, validate} from '@angular/forms/signals';
+import {email, form, FormField, maxLength, minLength, readonly, validate} from '@angular/forms/signals';
 import {UserService} from '@services/user-service';
+import {AuthService} from '@services/auth-service';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {HttpErrorResponse} from '@angular/common/http';
 
 @Component({
   selector: 'app-profile',
   imports: [
-    FormsModule,
     FormField
   ],
   templateUrl: './profile.html',
@@ -20,7 +21,9 @@ export class Profile implements OnInit {
   originalProfile = signal<ProfileData | null>(null);
 
   constructor(
-    private userService: UserService
+    private userService: UserService,
+    private authService: AuthService,
+    private snackBar: MatSnackBar
   ) {
   }
 
@@ -41,15 +44,17 @@ export class Profile implements OnInit {
 
   profileForm = form(this.profileModel, (fieldPath) => {
     readonly(fieldPath.id);
-    minLength(fieldPath.password, 8, {message: 'must be at least 8 characters'});
-    maxLength(fieldPath.password, 100, {message: 'password is too long'})
+    minLength(fieldPath.name, 3, {message: 'Minimum 3 characters'});
+    email(fieldPath.email, {message: 'Enter a valid email address'});
+    minLength(fieldPath.password, 8, {message: 'Must be at least 8 characters'});
+    maxLength(fieldPath.password, 100, {message: 'Password is too long'})
     validate(fieldPath.confirm_password, ({value, valueOf}) => {
       const confirmPassword = value();
       const password = valueOf(fieldPath.password);
       if (confirmPassword !== password) {
         return {
           kind: 'passwordMismatch',
-          message: 'passwords do not match',
+          message: 'Passwords do not match',
         };
       }
       return null;
@@ -82,11 +87,36 @@ export class Profile implements OnInit {
     );
   });
 
-
   updateUser(event: Event) {
     event.preventDefault();
+    console.log(this.profileModel());
+    this.userService.patchUser(this.profileModel())
+      .subscribe({
+        next: (response) => {
+          const {data, message} = response;
+          this.snackBar.open(
+            `Congratulations ${data.name}! ${message}`,
+            'ok',
+            {
+              duration: 3000,
+              panelClass: ['success-snackbar']
+            });
+          this.authService.logout();
+        },
+        error: (error: HttpErrorResponse) => {
+          const errorMsg = error.status === 409
+            ? "Username already exists!"
+            : "User modification failed!";
+          this.snackBar.open(
+            errorMsg,
+            'Close',
+            {
+              duration: 3000,
+              panelClass: ['error-snackbar']
+            });
+        }
+      })
   }
-
 
   modifyingUser() {
     if (!this.changeUser()) {

@@ -42,7 +42,7 @@
                     text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500
                       disabled:opacity-50 disabled:cursor-not-allowed
                         ">
-          {{ changeUser() ? 'No changes' : 'Modify' }}
+          {{ changeUser() ? 'Close modify' : 'Modify' }}
         </button>
       </div>
 
@@ -58,9 +58,8 @@
                      placeholder="Enter your name">
 
               @if (profileForm.name().touched() && profileForm.name().invalid()) {
-                <p class="error text-red-700"> Name not valid: </p>
                 <ul>
-                  @for (error of profileForm.name().errors(); track error.message) {
+                  @for (error of profileForm.name().errors(); track $index) {
                     <li class="text-red-700">{{ error.message }}</li>
                   }
                 </ul>
@@ -77,9 +76,8 @@
                      placeholder="Enter your email address">
 
               @if (profileForm.email().touched() && profileForm.email().invalid()) {
-                <p class="error text-red-700"> Email not valid: </p>
                 <ul>
-                  @for (error of profileForm.email().errors(); track error.message) {
+                  @for (error of profileForm.email().errors(); track $index) {
                     <li class="text-red-700">{{ error.message }}</li>
                   }
                 </ul>
@@ -104,9 +102,8 @@
                 }
               </select>
               @if (profileForm.role().invalid()) {
-                <p class="error text-red-700"> Role not valid: </p>
                 <ul>
-                  @for (error of profileForm.role().errors(); track error.message) {
+                  @for (error of profileForm.role().errors(); track $index) {
                     <li class="text-red-700">{{ error.message }}</li>
                   }
                 </ul>
@@ -115,16 +112,15 @@
           </div>
           <div>
             <label for="password" class="block text-sm font-medium text-gray-700 dark:text-white">
-              Password
+              New password
             </label>
             <div class="mt-1">
               <input [formField]="profileForm.password" id="password" type="password"
                      class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 dark:text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                      placeholder="Enter your password">
               @if (profileForm.password().touched() && profileForm.password().invalid()) {
-                <p class="error text-red-700"> Password not valid: </p>
                 <ul>
-                  @for (error of profileForm.password().errors(); track error.message) {
+                  @for (error of profileForm.password().errors(); track $index) {
                     <li class="text-red-700">{{ error.message }}</li>
                   }
                 </ul>
@@ -140,9 +136,8 @@
                      class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 dark:text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                      placeholder="Confirm your password">
               @if (profileForm.confirm_password().touched() && profileForm.confirm_password().invalid()) {
-                <p class="error text-red-700"> Password not valid: </p>
                 <ul>
-                  @for (error of profileForm.confirm_password().errors(); track error.message) {
+                  @for (error of profileForm.confirm_password().errors(); track $index) {
                     <li class="text-red-700">{{ error.message }}</li>
                   }
                 </ul>

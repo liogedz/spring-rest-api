@@ -1,14 +1,13 @@
 import {Component, computed, signal} from '@angular/core';
 import {LoginData} from '@common/login-data';
-import {form, FormField, required, readonly, submit} from '@angular/forms/signals';
-import {FormsModule} from '@angular/forms';
+import {form, FormField, required, readonly} from '@angular/forms/signals';
 import {AuthService} from '@services/auth-service';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {VerifyData} from '@common/verify-data';
 
 @Component({
   selector: 'app-login',
-  imports: [FormField, FormsModule],
+  imports: [FormField],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
@@ -32,13 +31,13 @@ export class Login {
   })
 
   loginForm = form(this.loginModel, (fieldPath) => {
-    required(fieldPath.identifier, {message: 'identifier is required'});
-    required(fieldPath.password, {message: 'password is required'});
+    required(fieldPath.identifier, {message: 'Identifier is required'});
+    required(fieldPath.password, {message: 'Password is required'});
   });
 
   verifyForm = form(this.verifyModel, (fieldPath) => {
     readonly(fieldPath.identifier);
-    required(fieldPath.code, {message: 'code is required'});
+    required(fieldPath.code, {message: 'Code is required'});
   })
 
   onLoginSubmit(event: Event) {
@@ -68,6 +67,7 @@ export class Login {
           } else if (err.status === 0) {
             errorMsg = 'Server unreachable.';
           }
+
           this.snackBar.open(
             errorMsg,
             'close', {

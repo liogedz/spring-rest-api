@@ -24,15 +24,6 @@ export class AuthService {
     this.router.navigate(["/login"]);
   }
 
-  isAuthenticated(): boolean {
-    let returnValue = false;
-    const authToken = localStorage.getItem("authToken");
-    if (authToken) {
-      returnValue = true;
-    }
-    return returnValue;
-  }
-
   registerUser(regData: RegData) {
     return this.http.post<ApiResponse>(`${this.apiUrl}/signup`, regData);
   }
@@ -47,7 +38,7 @@ export class AuthService {
   }
 
   completeLogin(user: { authToken: any; }): void {
-    const token = user.authToken ? `Bearer ${user.authToken}` : '';
+    const token = user.authToken ? user.authToken : '';
     if (token) {
       localStorage.setItem('authToken', token);
     }

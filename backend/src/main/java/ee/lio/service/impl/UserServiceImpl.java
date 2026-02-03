@@ -134,17 +134,17 @@ public class UserServiceImpl implements UserService {
         String name = request.name();
         String email = request.email();
 
-        if (name != null) {
+        if (hasValue(request.name())) {
             validateNameUniqueness(name,
                     id);
             user.setName(request.name());
         }
-        if (email != null) {
+        if (hasValue(request.email())) {
             validateEmailUniqueness(email,
                     id);
             user.setEmail(request.email());
         }
-        if (request.password() != null) {
+        if (hasValue(request.password())) {
             user.setPassword(passwordEncoder.encode(request.password()));
         }
 
@@ -210,6 +210,10 @@ public class UserServiceImpl implements UserService {
                 .ifPresent(u -> {
                     throw new ExistingUsernameException("Email already taken.");
                 });
+    }
+
+    private boolean hasValue(String s) {
+        return s != null && !s.isBlank();
     }
 
 

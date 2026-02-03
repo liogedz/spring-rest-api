@@ -34,16 +34,14 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity,
-                                                   JwtRequestFilter jwtRequestFilter) throws Exception {
+                                                   JwtRequestFilter jwtRequestFilter) {
         return httpSecurity.csrf(AbstractHttpConfigurer::disable).cors(cors -> cors.configurationSource(corsHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling((exception) -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .authorizeHttpRequests(
                         authorize -> authorize
-
                                 .requestMatchers("/api/auth/**").anonymous()
                                 .anyRequest().authenticated()
-
                 ).addFilterBefore(jwtRequestFilter,
                         UsernamePasswordAuthenticationFilter.class).build();
     }

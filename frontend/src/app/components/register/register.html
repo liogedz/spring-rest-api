@@ -21,7 +21,6 @@
                    placeholder="Enter your name">
 
             @if (regForm.name().touched() && regForm.name().invalid()) {
-              <p class="error text-red-700"> Name not valid: </p>
               <ul>
                 @for (error of regForm.name().errors(); track error.message) {
                   <li class="text-red-700">{{ error.message }}</li>
@@ -40,7 +39,6 @@
                    placeholder="Enter your email address">
 
             @if (regForm.email().touched() && regForm.email().invalid()) {
-              <p class="error text-red-700"> Email not valid: </p>
               <ul>
                 @for (error of regForm.email().errors(); track error.message) {
                   <li class="text-red-700">{{ error.message }}</li>
@@ -67,7 +65,6 @@
               }
             </select>
             @if (regForm.role().invalid()) {
-              <p class="error text-red-700"> Role not valid: </p>
               <ul>
                 @for (error of regForm.role().errors(); track error.message) {
                   <li class="text-red-700">{{ error.message }}</li>
@@ -84,14 +81,12 @@
             <input [formField]="regForm.password" id="password" type="password"
                    class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 dark:text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                    placeholder="Enter your password">
-            @if (regForm.password().touched() && regForm.password().invalid()) {
-              <p class="error text-red-700"> Password not valid: </p>
-              <ul>
-                @for (error of regForm.password().errors(); track error.message) {
-                  <li class="text-red-700">{{ error.message }}</li>
-                }
-              </ul>
-            }
+            <ul>
+              @for (error of regForm.password().errors(); track error.message) {
+                <li class="text-red-700">{{ error.message }}</li>
+              }
+            </ul>
+
           </div>
         </div>
         <div>
@@ -103,7 +98,6 @@
                    class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 dark:text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                    placeholder="Confirm your password">
             @if (regForm.confirm_password().touched() && regForm.confirm_password().invalid()) {
-              <p class="error text-red-700"> Password not valid: </p>
               <ul>
                 @for (error of regForm.confirm_password().errors(); track error.message) {
                   <li class="text-red-700">{{ error.message }}</li>

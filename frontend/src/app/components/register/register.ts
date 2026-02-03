@@ -1,7 +1,6 @@
 import {Component, computed, signal} from '@angular/core';
 import {Role} from '@common/role';
 import {form, FormField, required, email, minLength, maxLength, validate} from '@angular/forms/signals';
-import {FormsModule} from '@angular/forms';
 import {RegData} from '@common/reg-data';
 import {AuthService} from '@services/auth-service';
 import {HttpErrorResponse} from '@angular/common/http';
@@ -10,7 +9,7 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-register',
-  imports: [FormField, FormsModule],
+  imports: [FormField],
   templateUrl: './register.html',
   styleUrl: './register.css',
 })
@@ -35,22 +34,22 @@ export class Register {
   });
 
   regForm = form(this.regModel, (fieldPath) => {
-    required(fieldPath.name, {message: 'name is required'});
-    minLength(fieldPath.name, 3, {message: 'minimum 3 characters'});
+    required(fieldPath.name, {message: 'Name is required'});
+    minLength(fieldPath.name, 3, {message: 'Minimum 3 characters'});
     required(fieldPath.email, {message: 'e-mail is required'});
-    email(fieldPath.email, {message: 'enter a valid email address'});
-    required(fieldPath.role, {message: 'role is required'});
-    required(fieldPath.password, {message: 'password is required'});
-    required(fieldPath.confirm_password, {message: 'confirm password'});
-    minLength(fieldPath.password, 8, {message: 'must be at least 8 characters'});
-    maxLength(fieldPath.password, 100, {message: 'password is too long'})
+    email(fieldPath.email, {message: 'Enter a valid email address'});
+    required(fieldPath.role, {message: 'Role is required'});
+    required(fieldPath.password, {message: 'Password is required'});
+    required(fieldPath.confirm_password, {message: 'Confirm password'});
+    minLength(fieldPath.password, 8, {message: 'Must be at least 8 characters'});
+    maxLength(fieldPath.password, 100, {message: 'Password is too long'})
     validate(fieldPath.confirm_password, ({value, valueOf}) => {
       const confirmPassword = value();
       const password = valueOf(fieldPath.password);
       if (confirmPassword !== password) {
         return {
           kind: 'passwordMismatch',
-          message: 'passwords do not match',
+          message: 'Passwords do not match',
         };
       }
       return null;
