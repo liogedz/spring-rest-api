@@ -41,9 +41,9 @@ export class Register {
     email(fieldPath.email, {message: 'enter a valid email address'});
     required(fieldPath.role, {message: 'role is required'});
     required(fieldPath.password, {message: 'password is required'});
+    required(fieldPath.confirm_password, {message: 'confirm password'});
     minLength(fieldPath.password, 8, {message: 'must be at least 8 characters'});
     maxLength(fieldPath.password, 100, {message: 'password is too long'})
-    required(fieldPath.confirm_password, {message: 'confirm password'});
     validate(fieldPath.confirm_password, ({value, valueOf}) => {
       const confirmPassword = value();
       const password = valueOf(fieldPath.password);
@@ -77,7 +77,8 @@ export class Register {
     this.hasRegFormErrors() && this.regFormTouched()
   );
 
-  onSubmit() {
+  onSubmit(event: Event) {
+    event.preventDefault();
     if (this.hasRegFormErrors()) return;
 
     this.authService.registerUser(this.regModel())

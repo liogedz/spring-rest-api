@@ -1,6 +1,6 @@
 import {Component, computed, signal} from '@angular/core';
 import {LoginData} from '@common/login-data';
-import {form, FormField, required, readonly} from '@angular/forms/signals';
+import {form, FormField, required, readonly, submit} from '@angular/forms/signals';
 import {FormsModule} from '@angular/forms';
 import {AuthService} from '@services/auth-service';
 import {MatSnackBar} from '@angular/material/snack-bar';
@@ -41,7 +41,9 @@ export class Login {
     required(fieldPath.code, {message: 'code is required'});
   })
 
-  onLoginSubmit() {
+  onLoginSubmit(event: Event) {
+    event.preventDefault();
+
     if (this.hasLoginErrors()) return;
 
     this.authService.login(this.loginModel())
@@ -58,7 +60,14 @@ export class Login {
             });
         },
         error: (err) => {
-          const errorMsg = err.error.message || 'Login failed.';
+          let errorMsg = 'Login failed.';
+          if (typeof err.error === 'string') {
+            errorMsg = err.error;
+          } else if (err.error?.message) {
+            errorMsg = err.error.message;
+          } else if (err.status === 0) {
+            errorMsg = 'Server unreachable.';
+          }
           this.snackBar.open(
             errorMsg,
             'close', {
@@ -69,7 +78,8 @@ export class Login {
       });
   }
 
-  onTwoFASubmit() {
+  onTwoFASubmit(event: Event) {
+    event.preventDefault();
     if (this.isVerifyDisabled()) return;
 
     this.authService.verify2FA(this.verifyModel())

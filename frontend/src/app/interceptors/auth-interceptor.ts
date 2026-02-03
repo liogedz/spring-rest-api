@@ -12,31 +12,38 @@ import {Router} from '@angular/router';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  router = inject(Router);
-
-  constructor() {
-  }
+  private router = inject(Router);
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const authToken = localStorage.getItem('authToken');
+    const authToken = localStorage.getItem('authToken')?.trim();
 
+    // Skip all /api/auth/** requests (login, register, etc.)
+    if (req.url.includes('/api/auth/')) {
+      return next.handle(req).pipe(
+        catchError((error: HttpErrorResponse) => this.handle401(error))
+      );
+    }
+
+    // Clone request with Authorization header if token exists
     let authReq = req;
     if (authToken) {
       authReq = req.clone({
         setHeaders: {
-          Authorization: authToken
+          Authorization: `Bearer ${authToken}`
         }
       });
     }
 
     return next.handle(authReq).pipe(
-      catchError((error: HttpErrorResponse) => {
-        if (error.status === 401) {
-          localStorage.clear();
-          this.router.navigate(['/login']);
-        }
-        return throwError(() => error);
-      })
+      catchError((error: HttpErrorResponse) => this.handle401(error))
     );
+  }
+
+  private handle401(error: HttpErrorResponse) {
+    if (error.status === 401) {
+      localStorage.clear();
+      this.router.navigate(['/login']);
+    }
+    return throwError(() => error);
   }
 }
