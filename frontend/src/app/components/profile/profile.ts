@@ -88,8 +88,8 @@ export class Profile implements OnInit {
   });
 
   updateUser(event: Event) {
+
     event.preventDefault();
-    console.log(this.profileModel());
     this.userService.patchUser(this.profileModel())
       .subscribe({
         next: (response) => {

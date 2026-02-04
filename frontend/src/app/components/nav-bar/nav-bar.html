@@ -1,0 +1,43 @@
+<nav class="bg-neutral-primary">
+  <div class="bg-gray-800 text-white py-3 px-4 flex items-center justify-between">
+    <button
+      matTooltip="toggle theme"
+      (click)="darkThemeSelectorService.toggleTheme()"
+      class="p-2 rounded-lg
+         bg-gray-200 dark:bg-gray-700
+         hover:bg-gray-300 dark:hover:bg-gray-600
+         transition">
+
+      @if (darkThemeSelectorService.currentTheme() === 'light') {
+        <img class="h-5 w-5" src="/sun.svg" alt="Light mode">
+      } @else if (darkThemeSelectorService.currentTheme() === 'dark') {
+        <img class="h-5 w-5" src="/moon.svg" alt="Dark mode">
+      } @else {
+        <img class="h-5 w-5" src="/system.svg" alt="System mode">
+      }
+
+    </button>
+    <div class="flex space-x-6">
+      @if (userRole() == Role.ADMIN) {
+        <button
+          matTooltip="Manage Users"
+          (click)="manageUsers()" class="p-2 rounded-lg
+         bg-gray-200 dark:bg-gray-700
+         hover:bg-gray-300 dark:hover:bg-gray-600
+         transition">
+          <img class="h-5 w-5" src="/adjust.svg" alt="System mode">
+        </button>
+      }
+
+      <button
+        matTooltip="logout"
+        (click)="logout()"
+        class="p-2 rounded-lg
+         bg-gray-200 dark:bg-gray-700
+         hover:bg-gray-300 dark:hover:bg-gray-600
+         transition">
+        <img class="h-5 w-5" src="/logout.svg" alt="System mode">
+      </button>
+    </div>
+  </div>
+</nav>

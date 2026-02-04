@@ -39,10 +39,10 @@ export class Register {
     required(fieldPath.email, {message: 'e-mail is required'});
     email(fieldPath.email, {message: 'Enter a valid email address'});
     required(fieldPath.role, {message: 'Role is required'});
-    required(fieldPath.password, {message: 'Password is required'});
-    required(fieldPath.confirm_password, {message: 'Confirm password'});
     minLength(fieldPath.password, 8, {message: 'Must be at least 8 characters'});
     maxLength(fieldPath.password, 100, {message: 'Password is too long'})
+    required(fieldPath.password, {message: 'Password is required'});
+    required(fieldPath.confirm_password, {message: 'Confirm password is required'});
     validate(fieldPath.confirm_password, ({value, valueOf}) => {
       const confirmPassword = value();
       const password = valueOf(fieldPath.password);
