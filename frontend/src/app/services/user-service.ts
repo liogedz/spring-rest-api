@@ -1,9 +1,9 @@
-import {Injectable} from '@angular/core';
+import {Injectable, signal} from '@angular/core';
 import {ENVIRONMENT} from "@common/environment";
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {ProfileData} from '@common/profile-data';
-import {Role} from '@common/role';
 import {ApiResponse} from '@common/api-response';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Injectable({
   providedIn: 'root',
@@ -11,23 +11,42 @@ import {ApiResponse} from '@common/api-response';
 export class UserService {
   private apiUrl = `${ENVIRONMENT.apiUrl}/users`
 
-  constructor(private http: HttpClient) {
+  private usersSignal = signal<ProfileData[]>([]);
+  users = this.usersSignal.asReadonly();
+
+
+  constructor(
+    private http: HttpClient,
+    private snackBar: MatSnackBar
+  ) {
+    this.getAllUsers()
   }
 
-  getCurrentUser(): ProfileData {
-    const userStr = localStorage.getItem("currentUser");
-    return userStr ? JSON.parse(userStr) : {
-      id: 0,
-      name: "",
-      email: "",
-      role: Role.USER,
-      password: "",
-      confirm_password: "",
-    };
+  getAllUsers() {
+    this.http.get<ApiResponse<ProfileData[]>>(`${this.apiUrl}`).subscribe({
+      next: (response) =>
+        this.usersSignal.set(response.data),
+      error: (err: HttpErrorResponse) => {
+        this.snackBar.open(
+          err.message,
+          'close',
+          {
+            duration: 3000,
+            panelClass: ['error-snackbar']
+          });
+      }
+    });
+  }
+
+  getUserById(id: number) {
+    return this.http.get<ApiResponse<ProfileData>>(`${this.apiUrl}/${id}`)
   }
 
   patchUser(profileData: ProfileData) {
-    return this.http.patch<ApiResponse>(`${this.apiUrl}/${profileData.id}`, profileData);
+    return this.http.patch<ApiResponse<any>>(`${this.apiUrl}/${profileData.id}`, profileData);
   }
 
+  getUserSnapshot(id: number) {
+    return this.users().find(u => u.id === id);
+  }
 }

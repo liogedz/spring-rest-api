@@ -6,6 +6,7 @@ import {UserService} from '@services/user-service';
 import {AuthService} from '@services/auth-service';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {HttpErrorResponse} from '@angular/common/http';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-profile',
@@ -19,18 +20,21 @@ export class Profile implements OnInit {
   changeUser = signal(false);
   userRoles: string[] = Object.values(Role);
   originalProfile = signal<ProfileData | null>(null);
+  isSelf = signal(false);
 
   constructor(
     private userService: UserService,
     private authService: AuthService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private route: ActivatedRoute,
   ) {
   }
 
   ngOnInit(): void {
-    const user = this.userService.getCurrentUser()
-    this.setProfile(user);
-    this.originalProfile.set(structuredClone(user));
+    this.route.paramMap.subscribe(params => {
+      const id = Number(params.get('id'));
+      this.loadProfileUser(id);
+    });
   }
 
   profileModel = signal<ProfileData>({
@@ -88,8 +92,9 @@ export class Profile implements OnInit {
   });
 
   updateUser(event: Event) {
-
     event.preventDefault();
+    // maybe need to add payload, mapped from this.profileForm values
+
     this.userService.patchUser(this.profileModel())
       .subscribe({
         next: (response) => {
@@ -101,7 +106,9 @@ export class Profile implements OnInit {
               duration: 3000,
               panelClass: ['success-snackbar']
             });
-          this.authService.logout();
+          if (this.isSelf()) {
+            this.authService.logout();
+          }
         },
         error: (error: HttpErrorResponse) => {
           const errorMsg = error.status === 409
@@ -119,10 +126,38 @@ export class Profile implements OnInit {
   }
 
   modifyingUser() {
-    if (!this.changeUser()) {
-      this.changeUser.set(true);
+    this.changeUser.update(v => !v);
+  }
+
+  private loadProfileUser(id: number) {
+    const currentUser = this.authService.currentUser();
+    if (id === currentUser.id) {
+      this.setProfile(currentUser);
+      this.originalProfile.set(structuredClone(currentUser));
+      this.isSelf.set(true);
+      return;
+    }
+    this.isSelf.set(false);
+    const cached = this.userService.getUserSnapshot(id);
+    if (cached) {
+      this.setProfile(cached);
+      this.originalProfile.set(structuredClone(cached));
     } else {
-      this.changeUser.set(false);
+      this.userService.getUserById(id).subscribe({
+        next: (response) => {
+          this.setProfile(response.data);
+          this.originalProfile.set(structuredClone(response.data));
+        },
+        error: (err: HttpErrorResponse) => {
+          this.snackBar.open(
+            err.message,
+            'close',
+            {
+              duration: 3000,
+              panelClass: ['error-snackbar']
+            });
+        }
+      });
     }
   }
 }
