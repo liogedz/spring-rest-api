@@ -15,8 +15,8 @@ import {Router, RouterLink} from '@angular/router';
   styleUrl: './nav-bar.css',
 })
 export class NavBar {
+  protected readonly Role = Role;
   private authService: AuthService = inject(AuthService);
-
   isAuthenticated = this.authService.isAuthenticated;
 
   constructor(
@@ -33,10 +33,7 @@ export class NavBar {
     this.authService.logout();
   }
 
-
   protected manageUsers() {
     this.router.navigate(['/users'])
   }
-
-  protected readonly Role = Role;
 }

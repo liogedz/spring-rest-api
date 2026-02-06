@@ -160,4 +160,18 @@ export class Profile implements OnInit {
       });
     }
   }
+
+  protected confirmAndDelete(id: number) {
+    if (confirm(
+      this.isSelf()
+        ? 'Are you sure you want to permanently delete your own account?'
+        : 'Are you sure you want to delete this user?'
+    )) {
+      this.removeUser(id);
+    }
+  }
+
+  private removeUser(id: number) {
+    this.userService.deleteUser(id);
+  }
 }

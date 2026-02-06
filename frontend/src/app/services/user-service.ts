@@ -49,4 +49,8 @@ export class UserService {
   getUserSnapshot(id: number) {
     return this.users().find(u => u.id === id);
   }
+
+  deleteUser(id: number) {
+    return this.http.delete<ApiResponse<any>>(`${this.apiUrl}/${id}`);
+  }
 }
