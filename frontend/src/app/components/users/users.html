@@ -31,7 +31,7 @@
           <div>{{ user.email }}</div>
           <div class="font-medium">{{ user.role }}</div>
 
-          <a matTooltip="edit user"
+          <a title="edit user"
              [routerLink]="['/profile', user.id]"
              class="p-2 rounded-lg
          bg-gray-200 dark:bg-gray-700
@@ -40,7 +40,7 @@
             <img class="h-5 w-5" src="/edit.svg" alt="Delete user">
           </a>
           <button
-            matTooltip="delete user"
+            title="delete user"
             (click)="confirmAndDelete(user.id)"
             class="p-2 rounded-lg
          bg-gray-200 dark:bg-gray-700

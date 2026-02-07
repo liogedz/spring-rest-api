@@ -41,6 +41,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         authorize -> authorize
                                 .requestMatchers("/api/auth/**").anonymous()
+//                                .requestMatchers("/api/users/**").hasRole("ADMIN") // for granting access to Role.ADMIN for specific path see UserDetailsAdapter
                                 .anyRequest().authenticated()
                 ).addFilterBefore(jwtRequestFilter,
                         UsernamePasswordAuthenticationFilter.class).build();

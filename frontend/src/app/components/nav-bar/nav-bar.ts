@@ -1,14 +1,12 @@
 import {Component, computed, inject} from '@angular/core';
 import {DarkThemeSelectorService} from '@services/dark-theme-selector-service';
 import {AuthService} from '@services/auth-service';
-import {MatTooltip} from '@angular/material/tooltip';
 import {Role} from '@common/role';
-import {Router, RouterLink} from '@angular/router';
+import {RouterLink} from '@angular/router';
 
 @Component({
   selector: 'app-nav-bar',
   imports: [
-    MatTooltip,
     RouterLink
   ],
   templateUrl: './nav-bar.html',
@@ -21,7 +19,6 @@ export class NavBar {
 
   constructor(
     protected darkThemeSelectorService: DarkThemeSelectorService,
-    private router: Router
   ) {
   }
 
@@ -31,9 +28,5 @@ export class NavBar {
 
   protected logout() {
     this.authService.logout();
-  }
-
-  protected manageUsers() {
-    this.router.navigate(['/users'])
   }
 }

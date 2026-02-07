@@ -35,7 +35,6 @@ export class AuthService {
     this._isAuthenticated.set(!!token);
   }
 
-
   logout(): void {
     localStorage.clear();
     this._isAuthenticated.set(false);

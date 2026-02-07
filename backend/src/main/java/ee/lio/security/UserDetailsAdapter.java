@@ -16,6 +16,12 @@ public record UserDetailsAdapter(User user) implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();
     }
+    // for using Role in the securityConfig use below:
+    //    public Collection<? extends GrantedAuthority> getAuthorities() {
+    //        return List.of(
+    //                new SimpleGrantedAuthority("ROLE_" + user.getRole().name())
+    //        );
+    //    }
 
     @Override
     public @Nullable String getPassword() {

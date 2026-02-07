@@ -87,9 +87,14 @@ export class Profile implements OnInit {
     return (
       original.name !== current.name ||
       original.email !== current.email ||
-      original.role !== current.role || this.modifyingPassword()
+      original.role !== current.role ||
+      this.modifyingPassword()
     );
   });
+
+  modifyingUser() {
+    this.changeUser.update(v => !v);
+  }
 
   updateUser(event: Event) {
     event.preventDefault();
@@ -123,10 +128,6 @@ export class Profile implements OnInit {
             });
         }
       })
-  }
-
-  modifyingUser() {
-    this.changeUser.update(v => !v);
   }
 
   private loadProfileUser(id: number) {
