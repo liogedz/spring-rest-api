@@ -101,7 +101,7 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{base_url}}/api/users/1",
+          "raw": "{{base_url}}/api/user/1",
           "host": [
             "{{base_url}}"
           ],
@@ -156,7 +156,7 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{base_url}}/api/users/current-user",
+          "raw": "{{base_url}}/api/user/current",
           "host": [
             "{{base_url}}"
           ],
@@ -356,7 +356,7 @@
           }
         },
         "url": {
-          "raw": "{{base_url}}/api/users/1",
+          "raw": "{{base_url}}/api/user/1",
           "host": [
             "{{base_url}}"
           ],
@@ -420,7 +420,7 @@
           }
         },
         "url": {
-          "raw": "{{base_url}}/api/users/1",
+          "raw": "{{base_url}}/api/user/1",
           "host": [
             "{{base_url}}"
           ],
@@ -484,7 +484,7 @@
           }
         },
         "url": {
-          "raw": "{{base_url}}/api/users/1",
+          "raw": "{{base_url}}/api/user/1",
           "host": [
             "{{base_url}}"
           ],

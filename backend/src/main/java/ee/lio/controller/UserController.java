@@ -28,7 +28,7 @@ public class UserController {
         ));
     }
 
-    @GetMapping("current-user")
+    @GetMapping("current")
     public ResponseEntity<ApiResponse> getCurrentUser() {
         return ResponseEntity.ok(new ApiResponse("Current User",
                 userService.getCurrentUser()));

@@ -1,17 +1,17 @@
 ###
-# @name getAllUsers
+# @name getAllUsers only for ADMIN
 GET http://localhost:8080/api/users
 Authorization: Bearer {{auth_token}}
 
 ###
 # @name getUserById
-GET http://localhost:8080/api/users/1
+GET http://localhost:8080/api/user/1
 Authorization: Bearer {{auth_token}}
 
 ###
 
 # @name getCurrentUser
-GET http://localhost:8080/api/users/current-user
+GET http://localhost:8080/api/user/current
 Authorization: Bearer {{auth_token}}
 
 ###
@@ -52,7 +52,7 @@ Content-Type: application/json
 
 ###
 # @name update(put)
-PUT http://localhost:8080/api/users/2
+PUT http://localhost:8080/api/user/2
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
@@ -65,7 +65,7 @@ Content-Type: application/json
 
 ###
 # @name update (patch)
-PATCH http://localhost:8080/api/users/1
+PATCH http://localhost:8080/api/user/1
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
@@ -75,7 +75,7 @@ Content-Type: application/json
 
 ###
 # @name delete
-DELETE http://localhost:8080/api/users/2
+DELETE http://localhost:8080/api/user/2
 Authorization: Bearer {{auth_token}}
 
 ###
