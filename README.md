@@ -14,6 +14,7 @@ A comprehensive REST API demonstrating Spring Boot best practices, authenticatio
 - 📝 Bean validation
 - 🗄️ H2 in-memory database
 - 🎯 Clean architecture (Controller → Service → Repository)
+- 🅰️ Angular experimental Signals Forms and Signals based architecture
 
 ## Tech Stack
 
@@ -25,6 +26,7 @@ A comprehensive REST API demonstrating Spring Boot best practices, authenticatio
 - JWT (JSON Web Tokens)
 - Maven
 - JavaMail API
+- Angular 21.1.1
 
 ## API Endpoints
 
@@ -37,16 +39,17 @@ A comprehensive REST API demonstrating Spring Boot best practices, authenticatio
 ### Users (Protected)
 
 - `GET /api/users` - Get all users (ADMIN only)
-- `GET /api/users/{id}` - Get user by ID
-- `GET /api/users/current-user` - Get current user
-- `PUT /api/users/{id}` - Full update (own account or ADMIN)
-- `PATCH /api/users/{id}` - Partial update (own account or ADMIN)
-- `DELETE /api/users/{id}` - Delete user (own account or ADMIN)
+- `GET /api/user/{id}` - Get user by ID
+- `GET /api/user/current-user` - Get current user
+- `PUT /api/user/{id}` - Full update (own account or ADMIN)
+- `PATCH /api/user/{id}` - Partial update (own account or ADMIN)
+- `DELETE /api/user/{id}` - Delete user (own account or ADMIN)
 
 ## Prerequisites
 
 - Java 21
 - Maven 4.x
+- Angular 21.1.1
 - Gmail account with App Password enabled
 
 ## Setup
@@ -60,7 +63,7 @@ cd
 
 ### 2. Configure environment variables
 
-Rename `.env.example` to `.env` in the root directory:
+Rename `.env.example` to `.env` in the [resources](/backend/src/main/resources) directory:
 
 ```bash
 cp .env.example .env
@@ -95,7 +98,14 @@ JWT_SECRET=your-generated-secret
 ### Using Maven
 
 ```bash
+cd backend
 mvn spring-boot:run
+```
+
+```bash
+cd frontend
+npm install
+ng serve
 ```
 
 ### Using IDE
@@ -183,22 +193,35 @@ Import the collection: [postman_collection.json](/backend/docs/postman_collectio
 Authorization: Bearer <your-jwt-token>
 ```
 
-## Project Structure
+## Project backend  Structure
 
 ```
-├── data/           # db files
-├── docs/           # Postman collection
-├── src/main/java/ee/lio/
-├── config/          # Bean configurations
-├── controller/      # REST endpoints
-├── converter/       # Mapper
-├── dto/             # Request/Response DTOs
-├── exception/       # Custom exceptions
-├── model/           # Entities
-├── repository/      # Data access layer
-├── security/        # JWT filters, authentication
-├── service/         # Business logic
-└── utils/           # JWT Util
+├── backend/data/           # db files
+├── backend/docs/           # Postman collection
+├── backend/src/main/java/ee/lio/
+    ├── /config/            # Bean configurations
+    ├── /controller/        # REST endpoints
+    ├── /converter/         # Mapper
+    ├── /dto/               # Request/Response DTOs
+    ├── /exception/         # Custom exceptions
+    ├── /model/             # Entities
+    ├── /repository/        # Data access layer
+    ├── /security/          # JWT filters, authentication
+    ├── /service/           # Business logic
+    └── /utils/             # JWT Util
+
+```
+
+## Project frontend Structure
+
+```
+├──frontend/public/         # icons
+├──frontend/src/app         # root app folder
+    ├──/common/             # common used files
+    ├──/components/         # components
+    ├──/guards/             # guards
+    ├──/interceptors/       # interceptors
+    ├──/services/           # services
 
 ```
 
