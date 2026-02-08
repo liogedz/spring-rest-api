@@ -1,4 +1,4 @@
-import {Component, computed} from '@angular/core';
+import {Component, computed, inject} from '@angular/core';
 import {AuthService} from '@services/auth-service';
 
 @Component({
@@ -8,10 +8,9 @@ import {AuthService} from '@services/auth-service';
   styleUrl: './home.css',
 })
 export class Home {
+  private authService: AuthService = inject(AuthService);
   currentUser = computed(() =>
     this.authService.currentUser()
   );
 
-  constructor(private authService: AuthService) {
-  }
 }

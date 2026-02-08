@@ -19,7 +19,6 @@ export class UserService {
     private http: HttpClient,
     private snackBar: MatSnackBar
   ) {
-    this.getAllUsers()
   }
 
   getAllUsers() {

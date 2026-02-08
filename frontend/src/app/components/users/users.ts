@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {UserService} from '@services/user-service';
 import {RouterLink} from '@angular/router';
 import {AuthService} from '@services/auth-service';
@@ -11,15 +11,19 @@ import {AuthService} from '@services/auth-service';
   templateUrl: './users.html',
   styleUrl: './users.css',
 })
-export class Users {
-  private userService = inject(UserService);
-  users = this.userService.users;
+export class Users implements OnInit {
 
-  constructor(private authService: AuthService) {
+  private userService = inject(UserService);
+  private authService: AuthService = inject(AuthService);
+  users = this.userService.users;
+  currentUser = this.authService.currentUser;
+
+  ngOnInit(): void {
+    this.userService.getAllUsers();
   }
 
   protected confirmAndDelete(id: number) {
-    const adminId = this.authService.currentUser().id;
+    const adminId = this.currentUser().id;
     if (confirm(id === adminId
       ? 'Are you sure you want to permanently delete your own account?'
       : 'Are you sure you want to delete this user?'

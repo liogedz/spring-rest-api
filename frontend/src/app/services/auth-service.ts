@@ -31,8 +31,6 @@ export class AuthService {
     private http: HttpClient,
     private router: Router
   ) {
-    const token = localStorage.getItem('authToken');
-    this._isAuthenticated.set(!!token);
   }
 
   logout(): void {
@@ -52,16 +50,16 @@ export class AuthService {
   }
 
   registerUser(regData: RegData) {
-    return this.http.post<ApiResponse<any>>(`${this.apiUrl}/signup`, regData);
+    return this.http.post<ApiResponse<RegData>>(`${this.apiUrl}/signup`, regData);
   }
 
   login(loginData: LoginData) {
-    return this.http.post<ApiResponse<any>>(`${this.apiUrl}/login`, loginData);
+    return this.http.post<ApiResponse<LoginData>>(`${this.apiUrl}/login`, loginData);
   }
 
   verify2FA(verifyData: VerifyData) {
     console.log()
-    return this.http.post<ApiResponse<any>>(`${this.apiUrl}/verify`, verifyData);
+    return this.http.post<ApiResponse<VerifyData>>(`${this.apiUrl}/verify`, verifyData);
   }
 
   completeLogin(user: any): void {
