@@ -9,7 +9,7 @@ import {MatSnackBar} from '@angular/material/snack-bar';
   providedIn: 'root',
 })
 export class UserService {
-  private apiUrl = `${ENVIRONMENT.apiUrl}/users`
+  private apiUrl = `${ENVIRONMENT.apiUrl}/user`
 
   private usersSignal = signal<ProfileData[]>([]);
   users = this.usersSignal.asReadonly();
@@ -22,7 +22,7 @@ export class UserService {
   }
 
   getAllUsers() {
-    this.http.get<ApiResponse<ProfileData[]>>(`${this.apiUrl}`).subscribe({
+    this.http.get<ApiResponse<ProfileData[]>>(`${this.apiUrl}s`).subscribe({
       next: (response) =>
         this.usersSignal.set(response.data),
       error: (err: HttpErrorResponse) => {
