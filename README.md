@@ -2,7 +2,7 @@
 
 A comprehensive REST API demonstrating Spring Boot best practices, authentication, and CRUD operations.
 
-# branch `oauth2` work in progress changing to Oauth2, adding frontend Angular
+# frontend Angular added, `oauth2` work in progress changing to Oauth2
 
 ## Features
 
