@@ -1,13 +1,12 @@
-import {Injectable, signal} from '@angular/core';
+import {Injectable, signal, effect} from '@angular/core';
 import {ENVIRONMENT} from '@common/environment';
 import {HttpClient} from '@angular/common/http';
 import {RegData} from '@common/reg-data';
 import {ApiResponse} from '@common/api-response';
 import {Router} from '@angular/router';
 import {LoginData} from '@common/login-data';
-import {VerifyData} from '@common/verify-data';
-import {Role} from '@common/role';
 import {ProfileData} from '@common/profile-data';
+import {VerifyData} from '@common/verify-data';
 
 @Injectable({
   providedIn: 'root',
@@ -17,59 +16,59 @@ export class AuthService {
 
   private _isAuthenticated = signal<boolean>(false);
   isAuthenticated = this._isAuthenticated.asReadonly();
-
-  currentUser = signal<ProfileData>({
-    id: 0,
-    name: '',
-    email: "",
-    password: '',
-    confirm_password: '',
-    role: Role.USER
-  });
+  currentUser = signal<ProfileData | null>(null);
 
   constructor(
     private http: HttpClient,
     private router: Router
   ) {
+    // Rehydrate
+    const token = localStorage.getItem('authToken');
+    const storedUser = localStorage.getItem('currentUser');
+
+    if (token && storedUser) {
+      this._isAuthenticated.set(true);
+      this.currentUser.set(JSON.parse(storedUser));
+    }
+    // Persist reactively
+    effect(() => {
+      const user = this.currentUser();
+      if (user) {
+        localStorage.setItem('currentUser', JSON.stringify(user));
+      } else {
+        localStorage.removeItem('currentUser');
+      }
+    });
   }
+
 
   logout(): void {
     localStorage.clear();
     this._isAuthenticated.set(false);
-    this.currentUser.set({
+    this.currentUser.set(null);
 
-      id: 0,
-      name: '',
-      email: "",
-      password: '',
-      confirm_password: '',
-      role: Role.USER
-
-    });
     this.router.navigate(["/login"]);
   }
 
   registerUser(regData: RegData) {
-    return this.http.post<ApiResponse<RegData>>(`${this.apiUrl}/signup`, regData);
+    return this.http.post<ApiResponse>(`${this.apiUrl}/signup`, regData);
   }
 
   login(loginData: LoginData) {
-    return this.http.post<ApiResponse<LoginData>>(`${this.apiUrl}/login`, loginData);
+    return this.http.post<ApiResponse>(`${this.apiUrl}/login`, loginData);
   }
 
   verify2FA(verifyData: VerifyData) {
-    console.log()
-    return this.http.post<ApiResponse<VerifyData>>(`${this.apiUrl}/verify`, verifyData);
+    return this.http.post<ApiResponse>(`${this.apiUrl}/verify`, verifyData);
   }
 
-  completeLogin(user: any): void {
-    const token: string = user.authToken ? user.authToken : '';
-    if (token) {
-      localStorage.setItem('authToken', token);
-    }
+  completeLogin(user: ProfileData & { authToken: string }): void {
+    localStorage.setItem('authToken', user.authToken);
+    localStorage.setItem('currentUser', JSON.stringify(user));
+
     this.currentUser.set(user);
     this._isAuthenticated.set(true);
-    localStorage.setItem('currentUser', JSON.stringify(user));
+
     this.router.navigate(['/home']);
   }
 }

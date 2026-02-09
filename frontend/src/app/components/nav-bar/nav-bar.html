@@ -30,7 +30,7 @@
         </a>
         <a
           title="Profile page"
-          [routerLink]="['/profile', currentUser().id]"
+          [routerLink]="['/profile', currentUser()?.id]"
           class="p-2 rounded-lg
          bg-gray-200 dark:bg-gray-700
          hover:bg-gray-300 dark:hover:bg-gray-600
@@ -38,7 +38,7 @@
           <img class="h-5 w-5" src="/user.svg" alt="Profile">
         </a>
 
-        @if (currentUser().role == Role.ADMIN) {
+        @if (currentUser()?.role == Role.ADMIN) {
           <a
             title="Manage Users"
             [routerLink]="['/users']" class="p-2 rounded-lg

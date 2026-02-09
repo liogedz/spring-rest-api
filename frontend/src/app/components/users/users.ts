@@ -23,7 +23,7 @@ export class Users implements OnInit {
   }
 
   protected confirmAndDelete(id: number) {
-    const adminId = this.currentUser().id;
+    const adminId = this.currentUser()?.id;
     if (confirm(id === adminId
       ? 'Are you sure you want to permanently delete your own account?'
       : 'Are you sure you want to delete this user?'

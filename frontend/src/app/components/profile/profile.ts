@@ -132,7 +132,7 @@ export class Profile implements OnInit {
 
   private loadProfileUser(id: number) {
     const currentUser = this.authService.currentUser();
-    if (id === currentUser.id) {
+    if (id === currentUser?.id) {
       this.setProfile(currentUser);
       this.originalProfile.set(structuredClone(currentUser));
       this.isSelf.set(true);
