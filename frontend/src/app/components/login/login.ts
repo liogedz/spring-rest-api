@@ -1,9 +1,10 @@
 import {Component, computed, signal} from '@angular/core';
 import {LoginData} from '@common/login-data';
-import {form, FormField, required, readonly} from '@angular/forms/signals';
+import {form, FormField, required} from '@angular/forms/signals';
 import {AuthService} from '@services/auth-service';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {VerifyData} from '@common/verify-data';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -16,6 +17,7 @@ export class Login {
 
   constructor(
     private authService: AuthService,
+    private router: Router,
     private snackBar: MatSnackBar
   ) {
   }
@@ -35,10 +37,6 @@ export class Login {
     required(fieldPath.password, {message: 'Password is required'});
   });
 
-  verifyForm = form(this.verifyModel, (fieldPath) => {
-    readonly(fieldPath.identifier);
-    required(fieldPath.code, {message: 'Code is required'});
-  })
 
   onLoginSubmit(event: Event) {
     event.preventDefault();
@@ -48,8 +46,11 @@ export class Login {
     this.authService.login(this.loginModel())
       .subscribe({
         next: (response) => {
-          this.show2FA.set(true);
-          this.verifyForm.identifier().value.set(this.loginForm.identifier().value());
+          this.router.navigate(['/verify'], {
+            queryParams: {
+              identifier: this.loginModel().identifier
+            }
+          });
           this.snackBar.open(
             response.message,
             'ok',
@@ -78,23 +79,6 @@ export class Login {
       });
   }
 
-  onTwoFASubmit(event: Event) {
-    event.preventDefault();
-    if (this.isVerifyDisabled()) return;
-
-    this.authService.verify2FA(this.verifyModel())
-      .subscribe({
-        next: (response) => this.authService.completeLogin(response.data),
-        error: () => {
-          this.snackBar.open(
-            'Invalid verification code.',
-            'close',
-            {duration: 3000, panelClass: ['error-snackbar']}
-          )
-        }
-      })
-  }
-
   hasLoginErrors = computed(() =>
     this.loginForm.identifier().invalid() ||
     this.loginForm.password().invalid()
@@ -107,9 +91,5 @@ export class Login {
 
   isLoginDisabled = computed(() =>
     this.hasLoginErrors() && this.loginTouched()
-  );
-
-  isVerifyDisabled = computed(() =>
-    this.verifyForm.code().invalid() && this.verifyForm.code().touched()
   );
 }

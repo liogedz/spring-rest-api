@@ -22,35 +22,59 @@ public class SecurityConfig {
 
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final CorsHandler corsHandler;
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
 
     public SecurityConfig(
             JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
-            CorsHandler corsHandler
+            CorsHandler corsHandler,
+            OAuth2SuccessHandler oAuth2SuccessHandler
     ) {
-
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
         this.corsHandler = corsHandler;
+        this.oAuth2SuccessHandler = oAuth2SuccessHandler;
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity,
-                                                   JwtRequestFilter jwtRequestFilter) {
-        return httpSecurity.csrf(AbstractHttpConfigurer::disable).cors(cors -> cors.configurationSource(corsHandler))
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .exceptionHandling((exception) -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))
-                .authorizeHttpRequests(
-                        authorize -> authorize
-                                .requestMatchers("/api/auth/**").anonymous()
-                                .requestMatchers("/api/users/**").hasRole("ADMIN")
-                                .anyRequest().authenticated()
-                ).addFilterBefore(jwtRequestFilter,
-                        UsernamePasswordAuthenticationFilter.class).build();
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity httpSecurity,
+            JwtRequestFilter jwtRequestFilter
+    ) {
+
+        return httpSecurity
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(corsHandler))
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .exceptionHandling(exception ->
+                        exception.authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                )
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(
+                                "/api/auth/**",
+                                "/oauth2/**",
+                                "/login/oauth2/**"
+                        ).permitAll()
+                        .requestMatchers("/api/users/**").hasRole("ADMIN")
+                        .anyRequest().authenticated()
+                )
+                .oauth2Login(oauth2 -> oauth2
+                        .successHandler(oAuth2SuccessHandler)
+                )
+                .addFilterBefore(
+                        jwtRequestFilter,
+                        UsernamePasswordAuthenticationFilter.class
+                )
+                .build();
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(UserDetailsService userDetailsService,
-                                                       BCryptPasswordEncoder passwordEncoder) {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(userDetailsService);
+    public AuthenticationManager authenticationManager(
+            UserDetailsService userDetailsService,
+            BCryptPasswordEncoder passwordEncoder
+    ) {
+        DaoAuthenticationProvider authProvider =
+                new DaoAuthenticationProvider(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder);
         return new ProviderManager(authProvider);
     }

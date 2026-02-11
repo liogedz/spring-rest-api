@@ -5,6 +5,7 @@ import ee.lio.dto.request.SignupRequest;
 import ee.lio.dto.request.UpdateRequest;
 import ee.lio.dto.response.UserResponse;
 import ee.lio.model.User;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.List;
 
@@ -27,7 +28,8 @@ public interface UserService {
     UserResponse updateUser(UpdateRequest request,
                             Integer id);
 
-
     UserResponse patchUser(PatchRequest request,
                            Integer id);
+
+    User findOrCreateOAuthUser(OAuth2User oauthUser);
 }

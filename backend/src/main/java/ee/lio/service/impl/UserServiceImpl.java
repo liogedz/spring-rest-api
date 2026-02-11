@@ -9,6 +9,7 @@ import ee.lio.exceptions.ExistingUsernameException;
 import ee.lio.exceptions.ForbiddenException;
 import ee.lio.exceptions.InvalidIdentifierException;
 import ee.lio.exceptions.ResourceNotFoundException;
+import ee.lio.model.AuthProvider;
 import ee.lio.model.Role;
 import ee.lio.model.User;
 import ee.lio.repository.UserRepository;
@@ -19,6 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -158,6 +160,23 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
+    public User findOrCreateOAuthUser(OAuth2User oAuthUser) {
+        String email = oAuthUser.getAttribute("email");
+        return userRepository.findByEmail(email)
+                .orElseGet(() -> {
+                    User u = new User();
+                    u.setEmail(email);
+                    u.setName(oAuthUser.getAttribute("name"));
+                    u.setRole(Role.USER);
+                    u.setProvider(AuthProvider.GOOGLE);
+                    u.setProviderId(oAuthUser.getAttribute("sub"));
+                    u.setEnabled(true);
+                    return userRepository.save(u);
+                });
+    }
+
+    @Transactional
+    @Override
     public void deleteUser(Integer id) {
         Optional<User> optUser = userRepository.findUserById(id);
         if (optUser.isEmpty()) {
@@ -215,6 +234,5 @@ public class UserServiceImpl implements UserService {
     private boolean hasValue(String s) {
         return s != null && !s.isBlank();
     }
-
 
 }

@@ -1,6 +1,14 @@
 server:
   port: 8080
 spring:
+  security:
+    oauth2:
+      client:
+        registration.github.client-id: ${GITHUB_CLIENT_ID}
+        registration.github.client-secret: ${GITHUB_CLIENT_SECRET}
+        registration.google.client-id: ${GOOGLE_CLIENT_ID}
+        registration.google.client-secret: ${GOOGLE_CLIENT_SECRET}
+
   config:
     import:
       - optional:classpath:.env[.properties]
@@ -25,11 +33,9 @@ spring:
     username: ${EMAIL_USR}
     password: ${EMAIL_PWD}
     properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
 
 jwtSecret: ${JWT_SECRET}
 jwtExpirationMs: ${JWT_EXP}
+redirectUrl: http://localhost:4200/verify?identifier=

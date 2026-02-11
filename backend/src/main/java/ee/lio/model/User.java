@@ -24,11 +24,19 @@ public class User {
     @Column(nullable = false, columnDefinition = "TEXT", unique = true)
     private String email;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT")
     private String password;
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @Column(columnDefinition = "TEXT")
+    private String providerId;
+
+    @Enumerated(EnumType.STRING)
+    private AuthProvider provider;
+
+    private boolean enabled;
 
     public User() {
     }
@@ -37,12 +45,18 @@ public class User {
                 String name,
                 String email,
                 String password,
-                Role role) {
+                Role role,
+                String providerId,
+                AuthProvider provider,
+                boolean enabled) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
         this.role = role;
+        this.providerId = providerId;
+        this.provider = provider;
+        this.enabled = enabled;
     }
 
     public Integer getId() {
@@ -77,6 +91,14 @@ public class User {
         this.password = password;
     }
 
+    public AuthProvider getProvider() {
+        return provider;
+    }
+
+    public void setProvider(AuthProvider provider) {
+        this.provider = provider;
+    }
+
     public Role getRole() {
         return role;
     }
@@ -85,15 +107,32 @@ public class User {
         this.role = role;
     }
 
+    public String getProviderId() {
+        return providerId;
+    }
+
+    public void setProviderId(String providerId) {
+        this.providerId = providerId;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        User engineer = (User) o;
-        return Objects.equals(id,
-                engineer.id) && Objects.equals(name,
-                engineer.name) && Objects.equals(email,
-                engineer.email) && Objects.equals(password,
-                engineer.password) && role == engineer.role;
+        User user = (User) o;
+        return enabled == user.enabled && Objects.equals(id,
+                user.id) && Objects.equals(name,
+                user.name) && Objects.equals(email,
+                user.email) && Objects.equals(password,
+                user.password) && role == user.role && Objects.equals(providerId,
+                user.providerId) && provider == user.provider;
     }
 
     @Override
@@ -102,6 +141,9 @@ public class User {
                 name,
                 email,
                 password,
-                role);
+                role,
+                providerId,
+                provider,
+                enabled);
     }
 }

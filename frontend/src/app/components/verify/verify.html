@@ -1,0 +1,57 @@
+<div
+  class="min-h-screen bg-gray-100 dark:bg-gray-900
+         text-gray-900 dark:text-gray-100
+         flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+  <div class="sm:mx-auto sm:w-full sm:max-w-md">
+    <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-gray-100">
+      Verify code
+    </h2>
+
+  </div>
+  <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+    <div class="bg-white dark:bg-gray-700 py-8 px-4 shadow sm:rounded-lg sm:px-10">
+
+      <form class="space-y-6" (submit)="onTwoFASubmit($event)">
+        <div>
+          <label for="identifier" class="block text-sm font-medium text-gray-700 dark:text-white">
+            Identification
+          </label>
+          <div class="mt-1">
+            <input [formField]="verifyForm.identifier" id="identifier" type="text"
+                   class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 dark:text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                   placeholder="Enter your name or email address">
+          </div>
+        </div>
+        <div>
+          <label for="code" class="block text-sm font-medium text-gray-700 dark:text-white">
+            Confirmation code
+          </label>
+          <div class="mt-1">
+            <input [formField]="verifyForm.code" id="code" type="text"
+                   class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 dark:text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                   placeholder="Enter verification code">
+            @if (verifyForm.code().touched() && verifyForm.code().invalid()) {
+              <ul>
+                @for (error of verifyForm.code().errors(); track $index) {
+                  <li class="text-red-700">{{ error.message }}</li>
+                }
+              </ul>
+            }
+          </div>
+        </div>
+        <div>
+          <button type="submit" [disabled]="isVerifyDisabled()"
+                  class="
+                  cursor-pointer group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md
+                   text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500
+                    disabled:opacity-50 disabled:cursor-not-allowed
+                        ">
+            Verify
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
