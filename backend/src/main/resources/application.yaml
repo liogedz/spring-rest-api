@@ -4,10 +4,16 @@ spring:
   security:
     oauth2:
       client:
-        registration.github.client-id: ${GITHUB_CLIENT_ID}
-        registration.github.client-secret: ${GITHUB_CLIENT_SECRET}
-        registration.google.client-id: ${GOOGLE_CLIENT_ID}
-        registration.google.client-secret: ${GOOGLE_CLIENT_SECRET}
+        registration:
+          github:
+            client-id: ${GITHUB_CLIENT_ID}
+            client-secret: ${GITHUB_CLIENT_SECRET}
+            scope:
+              - read:user
+              - user:email
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
 
   config:
     import:
@@ -33,9 +39,11 @@ spring:
     username: ${EMAIL_USR}
     password: ${EMAIL_PWD}
     properties:
-      mail.smtp.auth: true
-      mail.smtp.starttls.enable: true
+      mail.smtp:
+        auth: true
+        starttls.enable: true
 
 jwtSecret: ${JWT_SECRET}
 jwtExpirationMs: ${JWT_EXP}
-redirectUrl: http://localhost:4200/verify?identifier=
+redirectVerifyUrl: http://localhost:4200/verify?identifier=
+redirectRegisterUrl: http://localhost:4200/register?identifier=

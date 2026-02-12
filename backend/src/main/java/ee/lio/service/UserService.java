@@ -31,5 +31,6 @@ public interface UserService {
     UserResponse patchUser(PatchRequest request,
                            Integer id);
 
-    User findOrCreateOAuthUser(OAuth2User oauthUser);
+    User findOrCreateOAuthUser(OAuth2User oauthUser,
+                               String registrationId);
 }

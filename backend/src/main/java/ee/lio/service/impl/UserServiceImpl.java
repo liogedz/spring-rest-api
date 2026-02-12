@@ -20,11 +20,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -160,20 +162,33 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public User findOrCreateOAuthUser(OAuth2User oAuthUser) {
-        String email = oAuthUser.getAttribute("email");
+    public User findOrCreateOAuthUser(
+            OAuth2User oauthUser,
+            String registrationId
+    ) {
+        AuthProvider provider =
+                AuthProvider.valueOf(registrationId.toUpperCase());
+
+        String email = extractEmail(oauthUser,
+                provider);
+        String providerId = extractProviderId(oauthUser,
+                provider);
+        String name = extractName(oauthUser,
+                provider);
+
         return userRepository.findByEmail(email)
                 .orElseGet(() -> {
                     User u = new User();
                     u.setEmail(email);
-                    u.setName(oAuthUser.getAttribute("name"));
+                    u.setName(name);
                     u.setRole(Role.USER);
-                    u.setProvider(AuthProvider.GOOGLE);
-                    u.setProviderId(oAuthUser.getAttribute("sub"));
+                    u.setProvider(provider);
+                    u.setProviderId(providerId);
                     u.setEnabled(true);
                     return userRepository.save(u);
                 });
     }
+
 
     @Transactional
     @Override
@@ -234,5 +249,40 @@ public class UserServiceImpl implements UserService {
     private boolean hasValue(String s) {
         return s != null && !s.isBlank();
     }
+
+    private String extractEmail(OAuth2User user,
+                                AuthProvider provider) {
+        String email = user.getAttribute("email");
+
+        if (email == null) {
+            throw new OAuth2AuthenticationException(
+                    "Email not provided by " + provider
+            );
+        }
+
+        return email;
+    }
+
+    private String extractProviderId(OAuth2User user,
+                                     AuthProvider provider) {
+        return switch (provider) {
+            case GOOGLE -> user.getAttribute("sub");
+            case GITHUB -> Objects.requireNonNull(user.getAttribute("id")).toString();
+            case LOCAL -> null;
+        };
+    }
+
+    private String extractName(OAuth2User user,
+                               AuthProvider provider) {
+        return switch (provider) {
+            case GOOGLE -> user.getAttribute("name");
+            case GITHUB -> {
+                String name = user.getAttribute("name");
+                yield name != null ? name : user.getAttribute("login");
+            }
+            case LOCAL -> null;
+        };
+    }
+
 
 }
