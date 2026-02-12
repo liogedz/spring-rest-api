@@ -23,18 +23,18 @@ public class SecurityConfig {
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final CorsHandler corsHandler;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
-    private final GitHubEmailEnricher gitHubEmailEnricher;
+    private final GitHubEmailLoader gitHubEmailLoader;
 
     public SecurityConfig(
             JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
             CorsHandler corsHandler,
             OAuth2SuccessHandler oAuth2SuccessHandler,
-            GitHubEmailEnricher gitHubEmailEnricher
+            GitHubEmailLoader gitHubEmailLoader
     ) {
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
         this.corsHandler = corsHandler;
         this.oAuth2SuccessHandler = oAuth2SuccessHandler;
-        this.gitHubEmailEnricher = gitHubEmailEnricher;
+        this.gitHubEmailLoader = gitHubEmailLoader;
     }
 
     @Bean
@@ -63,7 +63,7 @@ public class SecurityConfig {
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .userInfoEndpoint(userInfo -> userInfo
-                                .userService(gitHubEmailEnricher)
+                                .userService(gitHubEmailLoader)
                         )
                         .successHandler(oAuth2SuccessHandler)
                 )

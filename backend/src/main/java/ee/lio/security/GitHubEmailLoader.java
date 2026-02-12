@@ -1,5 +1,6 @@
 package ee.lio.security;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -9,17 +10,24 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestClient;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Component
-public class GitHubEmailEnricher implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
+public class GitHubEmailLoader implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
+
+    @Value("${githubEmailApi}")
+    private String githubEmailApi;
 
     private final DefaultOAuth2UserService delegate = new DefaultOAuth2UserService();
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestClient restClient;
+
+    public GitHubEmailLoader(RestClient.Builder restClientBuilder) {
+        this.restClient = restClientBuilder.build();
+    }
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest)
@@ -27,26 +35,25 @@ public class GitHubEmailEnricher implements OAuth2UserService<OAuth2UserRequest,
         OAuth2User user = delegate.loadUser(userRequest);
 
         String token = userRequest.getAccessToken().getTokenValue();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(token);
-        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
 
-        HttpEntity<Void> entity = new HttpEntity<>(headers);
+        List<Map<String, Object>> emailResponse = restClient.get()
+                .uri(githubEmailApi)
+                .header(HttpHeaders.AUTHORIZATION,
+                        "Bearer " + token)
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .body(new ParameterizedTypeReference<>() {
+                });
 
-        ResponseEntity<List<Map<String, Object>>> response = restTemplate.exchange(
-                "https://api.github.com/user/emails",
-                HttpMethod.GET,
-                entity,
-                new ParameterizedTypeReference<>() {
-                }
-        );
-
-        String primaryEmail = response.getBody().stream()
-                .filter(e -> Boolean.TRUE.equals(e.get("primary")))
-                .filter(e -> Boolean.TRUE.equals(e.get("verified")))
-                .map(e -> (String) e.get("email"))
-                .findFirst()
-                .orElse(null);
+        String primaryEmail = null;
+        if (emailResponse != null) {
+            primaryEmail = emailResponse.stream()
+                    .filter(e -> Boolean.TRUE.equals(e.get("primary")))
+                    .filter(e -> Boolean.TRUE.equals(e.get("verified")))
+                    .map(e -> (String) e.get("email"))
+                    .findFirst()
+                    .orElse(null);
+        }
 
         Map<String, Object> merged = new HashMap<>(user.getAttributes());
         merged.put("email",

@@ -23,9 +23,6 @@ public class OAuth2SuccessHandler
     @Value("${redirectVerifyUrl}")
     private String redirectUrl;
 
-    @Value("${redirectRegisterUrl}")
-    private String registerUrl;
-
     private final UserService userService;
     private final TwoFactorService twoFactorService;
     private final EmailService emailService;
