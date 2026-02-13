@@ -7,4 +7,5 @@ export interface ProfileData {
   password: string;
   confirm_password: string;
   role: Role;
+  confirmed: boolean;
 }

@@ -9,6 +9,7 @@ import {
 import {Observable, throwError} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {Router} from '@angular/router';
+import {PUBLIC_END_POINTS} from '@common/publicEndPoints';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -18,7 +19,7 @@ export class AuthInterceptor implements HttpInterceptor {
     const authToken = localStorage.getItem('authToken');
 
 
-    if (req.url.includes('/api/auth/')) {
+    if (PUBLIC_END_POINTS.some(e => req.url.includes(e))) {
       return next.handle(req).pipe(
         catchError((error: HttpErrorResponse) => this.handle401(error))
       );

@@ -2,6 +2,7 @@ package ee.lio.controller;
 
 import ee.lio.converter.UserResponseConverter;
 import ee.lio.dto.request.LoginRequest;
+import ee.lio.dto.request.SavePassword;
 import ee.lio.dto.request.SignupRequest;
 import ee.lio.dto.request.TwoFactorRequest;
 import ee.lio.dto.response.ApiResponse;
@@ -108,5 +109,12 @@ public class AuthController {
 
         return ResponseEntity.ok(new ApiResponse("Login successful",
                 userResponse));
+    }
+
+    @PostMapping(value = "set-password")
+    public ResponseEntity<ApiResponse> setPassword(@Validated @RequestBody SavePassword request) {
+        userService.savePassword(request);
+        return ResponseEntity.ok(new ApiResponse("Password is set successfully",
+                null));
     }
 }

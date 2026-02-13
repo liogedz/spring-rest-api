@@ -1,6 +1,7 @@
 package ee.lio.service;
 
 import ee.lio.dto.request.PatchRequest;
+import ee.lio.dto.request.SavePassword;
 import ee.lio.dto.request.SignupRequest;
 import ee.lio.dto.request.UpdateRequest;
 import ee.lio.dto.response.UserResponse;
@@ -14,6 +15,8 @@ public interface UserService {
 
 
     UserResponse createUser(SignupRequest request);
+
+    void savePassword(SavePassword request);
 
     List<UserResponse> getAllUsers();
 

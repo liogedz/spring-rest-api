@@ -43,7 +43,8 @@ export class Profile implements OnInit {
     email: "",
     password: '',
     confirm_password: '',
-    role: Role.USER
+    role: Role.USER,
+    confirmed: false
   });
 
   profileForm = form(this.profileModel, (fieldPath) => {

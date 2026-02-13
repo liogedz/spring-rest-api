@@ -38,6 +38,8 @@ public class User {
 
     private boolean enabled;
 
+    private boolean confirmed;
+
     public User() {
     }
 
@@ -48,7 +50,8 @@ public class User {
                 Role role,
                 String providerId,
                 AuthProvider provider,
-                boolean enabled) {
+                boolean enabled,
+                boolean confirmed) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -57,6 +60,7 @@ public class User {
         this.providerId = providerId;
         this.provider = provider;
         this.enabled = enabled;
+        this.confirmed = confirmed;
     }
 
     public Integer getId() {
@@ -91,14 +95,6 @@ public class User {
         this.password = password;
     }
 
-    public AuthProvider getProvider() {
-        return provider;
-    }
-
-    public void setProvider(AuthProvider provider) {
-        this.provider = provider;
-    }
-
     public Role getRole() {
         return role;
     }
@@ -115,6 +111,14 @@ public class User {
         this.providerId = providerId;
     }
 
+    public AuthProvider getProvider() {
+        return provider;
+    }
+
+    public void setProvider(AuthProvider provider) {
+        this.provider = provider;
+    }
+
     public boolean isEnabled() {
         return enabled;
     }
@@ -123,11 +127,19 @@ public class User {
         this.enabled = enabled;
     }
 
+    public boolean isConfirmed() {
+        return confirmed;
+    }
+
+    public void setConfirmed(boolean confirmed) {
+        this.confirmed = confirmed;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return enabled == user.enabled && Objects.equals(id,
+        return enabled == user.enabled && confirmed == user.confirmed && Objects.equals(id,
                 user.id) && Objects.equals(name,
                 user.name) && Objects.equals(email,
                 user.email) && Objects.equals(password,
@@ -144,6 +156,7 @@ public class User {
                 role,
                 providerId,
                 provider,
-                enabled);
+                enabled,
+                confirmed);
     }
 }

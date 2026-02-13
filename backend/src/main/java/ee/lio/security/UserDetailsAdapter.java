@@ -50,4 +50,6 @@ public record UserDetailsAdapter(User user) implements UserDetails {
     public boolean isEnabled() {
         return UserDetails.super.isEnabled();
     }
+
+
 }

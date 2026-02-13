@@ -18,6 +18,8 @@ public class UserResponse {
     @NotNull
     private Role role;
     private String authToken;
+    private boolean enabled;
+    private boolean confirmed;
 
     public UserResponse() {
     }
@@ -26,12 +28,16 @@ public class UserResponse {
                         String name,
                         String email,
                         Role role,
-                        String authToken) {
+                        String authToken,
+                        boolean enabled,
+                        boolean verified) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.role = role;
         this.authToken = authToken;
+        this.enabled = enabled;
+        this.confirmed = verified;
     }
 
     public Integer getId() {
@@ -72,5 +78,21 @@ public class UserResponse {
 
     public void setAuthToken(String authToken) {
         this.authToken = authToken;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public boolean isConfirmed() {
+        return confirmed;
+    }
+
+    public void setConfirmed(boolean confirmed) {
+        this.confirmed = confirmed;
     }
 }

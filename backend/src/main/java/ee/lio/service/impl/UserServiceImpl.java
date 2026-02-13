@@ -2,6 +2,7 @@ package ee.lio.service.impl;
 
 import ee.lio.converter.UserResponseConverter;
 import ee.lio.dto.request.PatchRequest;
+import ee.lio.dto.request.SavePassword;
 import ee.lio.dto.request.SignupRequest;
 import ee.lio.dto.request.UpdateRequest;
 import ee.lio.dto.response.UserResponse;
@@ -27,7 +28,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,18 +48,33 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse createUser(SignupRequest request) {
 
-        Optional<User> userByName = userRepository.findByName(request.getName());
-        if (userByName.isPresent()) {
-            throw new ExistingUsernameException("Username already taken.");
-        }
-        Optional<User> userByEmail = userRepository.findByName(request.getEmail());
-        if (userByEmail.isPresent()) {
-            throw new ExistingUsernameException("Email already taken.");
-        }
+        userRepository.findByName(request.getName())
+                .orElseThrow(() -> new ExistingUsernameException("Username already taken."));
+
+        userRepository.findByName(request.getEmail())
+                .orElseThrow(() -> new ExistingUsernameException("Email already taken."));
 
         request.setPassword(passwordEncoder.encode(request.getPassword()));
         User savedUser = userRepository.save(userResponseConverter.userRequestToUser(request));
         return userResponseConverter.userToUserResponse(savedUser);
+    }
+
+    @Transactional
+    @Override
+    public void savePassword(SavePassword request) {
+        User user = userRepository.findById(getCurrentUser().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        if (user.isConfirmed()) {
+            throw new ForbiddenException("Password already set");
+        }
+
+        AuthProvider provider = user.getProvider();
+        if (provider != AuthProvider.GOOGLE && provider != AuthProvider.GITHUB) {
+            throw new ForbiddenException("Password setup not allowed");
+        }
+        user.setPassword(passwordEncoder.encode(request.password()));
+        user.setConfirmed(true);
     }
 
     @Override
@@ -71,11 +86,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse getUserById(@PathVariable Integer id) {
-        Optional<User> userFound = userRepository.findUserById(id);
-        if (userFound.isEmpty()) {
-            throw new ResourceNotFoundException("User not found with id: " + id);
-        }
-        return userResponseConverter.userToUserResponse(userFound.get());
+        User userFound = userRepository.findUserById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+
+        return userResponseConverter.userToUserResponse(userFound);
     }
 
     @Override
@@ -122,8 +136,6 @@ public class UserServiceImpl implements UserService {
         applyRoleChangeIfAllowed(request.role(),
                 user,
                 isAdmin);
-
-        userRepository.save(user);
         return userResponseConverter.userToUserResponse(user);
     }
 
@@ -155,8 +167,6 @@ public class UserServiceImpl implements UserService {
         applyRoleChangeIfAllowed(request.role(),
                 user,
                 isAdmin);
-
-        userRepository.save(user);
         return userResponseConverter.userToUserResponse(user);
     }
 
@@ -193,10 +203,9 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void deleteUser(Integer id) {
-        Optional<User> optUser = userRepository.findUserById(id);
-        if (optUser.isEmpty()) {
-            throw new ResourceNotFoundException("User not found with id: " + id);
-        }
+        userRepository.findUserById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+
         UserResponse currentUser = getCurrentUser();
         if (!currentUser.getId().equals(id) && !currentUser.getRole().equals(Role.ADMIN)) {
             throw new ForbiddenException("Do not have permission to delete this user.");

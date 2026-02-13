@@ -7,6 +7,7 @@ import {Router} from '@angular/router';
 import {LoginData} from '@common/login-data';
 import {ProfileData} from '@common/profile-data';
 import {VerifyData} from '@common/verify-data';
+import {PasswordData} from '@common/password-data';
 
 @Injectable({
   providedIn: 'root',
@@ -62,13 +63,17 @@ export class AuthService {
     return this.http.post<ApiResponse>(`${this.apiUrl}/verify`, verifyData);
   }
 
+  savePassword(passwordData: PasswordData) {
+    return this.http.post<ApiResponse>(`${this.apiUrl}/set-password`, passwordData);
+  }
+
   completeLogin(user: ProfileData & { authToken: string }): void {
     localStorage.setItem('authToken', user.authToken);
     localStorage.setItem('currentUser', JSON.stringify(user));
 
     this.currentUser.set(user);
     this._isAuthenticated.set(true);
+    user.confirmed ? this.router.navigate(['/home']) : this.router.navigate(['/set-password'])
 
-    this.router.navigate(['/home']);
   }
 }
