@@ -55,11 +55,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
                                 "/api/auth/**",
+                                "/api/auth/set-password",
                                 "/oauth2/**",
                                 "/login/oauth2/**"
                         ).permitAll()
-                        .requestMatchers("/api/auth/set-password").authenticated()
-
                         .requestMatchers("/api/users/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )

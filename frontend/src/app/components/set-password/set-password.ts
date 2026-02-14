@@ -68,6 +68,7 @@ export class SetPassword {
               duration: 3000,
               panelClass: ['success-snackbar']
             });
+          this.setConfirmed();
           this.router.navigate(['/home']);
         },
         error: (error: HttpErrorResponse) => {
@@ -80,5 +81,14 @@ export class SetPassword {
             });
         }
       });
+  }
+
+  setConfirmed() {
+    this.authService.currentUser.update(user => {
+      if (user) {
+        return {...user, confirmed: true};
+      }
+      return null;
+    });
   }
 }

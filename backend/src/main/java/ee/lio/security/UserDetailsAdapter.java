@@ -48,7 +48,7 @@ public record UserDetailsAdapter(User user) implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return UserDetails.super.isEnabled();
+        return user.isConfirmed(); // only allow if confirmed
     }
 
 

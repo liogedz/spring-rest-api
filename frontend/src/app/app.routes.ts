@@ -15,7 +15,7 @@ export const routes: Routes = [
   {path: 'verify', component: Verify, canActivate: [unidentifiedGuard]},
   {path: 'home', component: Home, canActivate: [authGuard]},
   {path: 'profile/:id', component: Profile, canActivate: [authGuard]},
-  {path: 'set-password', component: SetPassword, canActivate: [authGuard]},
+  {path: 'set-password', component: SetPassword, canActivate: [unidentifiedGuard]},
   {path: 'users', component: Users, canActivate: [authGuard]},
   {path: '**', redirectTo: 'login', pathMatch: 'full'}
 ];

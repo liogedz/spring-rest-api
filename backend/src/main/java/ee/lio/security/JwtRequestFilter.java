@@ -50,6 +50,14 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         if (identifier != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.customUserDetailsService.loadUserByUsername(identifier);
+
+            if (!userDetails.isEnabled()
+                    && !request.getRequestURI().equals("/api/auth/set-password")) {
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                response.setContentType("application/json");
+                response.getWriter().write("{\"message\": \"User account not confirmed.\"}");
+                return;
+            }
             if (jwtUtil.validateToken(jwt,
                     userDetails)) {
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
