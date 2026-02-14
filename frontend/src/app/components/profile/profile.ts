@@ -174,6 +174,27 @@ export class Profile implements OnInit {
   }
 
   private removeUser(id: number) {
-    this.userService.deleteUser(id);
+    this.userService.deleteUser(id)
+      .subscribe({
+        next: (response) => {
+          this.snackBar.open(
+            response.message,
+            'ok',
+            {
+              duration: 3000,
+              panelClass: ['success-snackbar']
+            });
+          this.authService.logout();
+        },
+        error: (error: HttpErrorResponse) => {
+          this.snackBar.open(
+            error.message,
+            'Close',
+            {
+              duration: 3000,
+              panelClass: ['error-snackbar']
+            });
+        }
+      });
   }
 }

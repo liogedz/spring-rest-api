@@ -23,9 +23,4 @@ public class UserResponseConverter {
         return mapper.map(user,
                 UserResponse.class);
     }
-
-    public User userResponseToUser(UserResponse userResponse) {
-        return mapper.map(userResponse,
-                User.class);
-    }
 }

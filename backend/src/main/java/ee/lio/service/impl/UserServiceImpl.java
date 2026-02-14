@@ -48,14 +48,21 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse createUser(SignupRequest request) {
 
-        userRepository.findByName(request.getName())
-                .orElseThrow(() -> new ExistingUsernameException("Username already taken."));
+        if (userRepository.findByName(request.getName()).isPresent()) {
+            throw new ExistingUsernameException("Username already taken.");
+        }
 
-        userRepository.findByName(request.getEmail())
-                .orElseThrow(() -> new ExistingUsernameException("Email already taken."));
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new ExistingUsernameException("Email already taken.");
+        }
 
-        request.setPassword(passwordEncoder.encode(request.getPassword()));
-        User savedUser = userRepository.save(userResponseConverter.userRequestToUser(request));
+        User user = userResponseConverter.userRequestToUser(request);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setProvider(AuthProvider.LOCAL);
+        user.setEnabled(true);
+        user.setConfirmed(true);
+
+        User savedUser = userRepository.save(user);
         return userResponseConverter.userToUserResponse(savedUser);
     }
 
@@ -203,6 +210,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void deleteUser(Integer id) {
+        System.out.println("Deleting user with id: " + id);
         userRepository.findUserById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
 
