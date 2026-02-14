@@ -10,6 +10,7 @@ backend/target/
 *.h2.db
 *.mv.db
 *.trace.db
+*.lock.db
 !/src/main/resources/
 !/src/test/resources/
 .mvn/wrapper/maven-wrapper.jar
