@@ -22,7 +22,7 @@ export class Verify {
   verifyForm = form(this.verifyModel, (fieldPath) => {
     readonly(fieldPath.identifier);
     required(fieldPath.code, {message: 'Code is required'});
-  })
+  });
 
   constructor(
     private authService: AuthService,

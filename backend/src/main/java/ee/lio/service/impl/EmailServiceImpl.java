@@ -24,4 +24,16 @@ public class EmailServiceImpl implements EmailService {
         message.setText("Your verification code is: " + code);
         mailSender.send(message);
     }
+
+    @Override
+    public void sendPasswordReset(String email,
+                                  String address) {
+        String content = "To reset your password please click following link:\n\n" +
+                address;
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject("Reset your password");
+        message.setText(content);
+        mailSender.send(message);
+    }
 }

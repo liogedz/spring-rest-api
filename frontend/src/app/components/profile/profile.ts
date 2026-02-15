@@ -128,7 +128,7 @@ export class Profile implements OnInit {
               panelClass: ['error-snackbar']
             });
         }
-      })
+      });
   }
 
   private loadProfileUser(id: number) {

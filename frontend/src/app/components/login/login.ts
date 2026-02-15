@@ -3,7 +3,6 @@ import {LoginData} from '@common/login-data';
 import {form, FormField, required} from '@angular/forms/signals';
 import {AuthService} from '@services/auth-service';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {VerifyData} from '@common/verify-data';
 import {Router} from '@angular/router';
 
 @Component({
@@ -13,7 +12,6 @@ import {Router} from '@angular/router';
   styleUrl: './login.css',
 })
 export class Login {
-  show2FA = signal(false);
 
   constructor(
     private authService: AuthService,
@@ -26,11 +24,6 @@ export class Login {
     identifier: '',
     password: ''
   });
-
-  verifyModel = signal<VerifyData>({
-    identifier: '',
-    code: ''
-  })
 
   loginForm = form(this.loginModel, (fieldPath) => {
     required(fieldPath.identifier, {message: 'Identifier is required'});

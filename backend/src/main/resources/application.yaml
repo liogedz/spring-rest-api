@@ -27,7 +27,7 @@ spring:
     driver-class-name: org.h2.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     #  jpa:
     #    hibernate:
     #      ddl-auto: update
@@ -47,3 +47,4 @@ jwtSecret: ${JWT_SECRET}
 jwtExpirationMs: ${JWT_EXP}
 redirectVerifyUrl: http://localhost:4200/verify?identifier=
 githubEmailApi: https://api.github.com/user/emails
+resetPassword: "http://localhost:4200/reset-password?token="

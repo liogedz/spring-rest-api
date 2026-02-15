@@ -1,15 +1,13 @@
 package ee.lio.controller;
 
 import ee.lio.converter.UserResponseConverter;
-import ee.lio.dto.request.LoginRequest;
-import ee.lio.dto.request.SavePassword;
-import ee.lio.dto.request.SignupRequest;
-import ee.lio.dto.request.TwoFactorRequest;
+import ee.lio.dto.request.*;
 import ee.lio.dto.response.ApiResponse;
 import ee.lio.dto.response.UserResponse;
 import ee.lio.exceptions.DataNotValidatedException;
 import ee.lio.model.User;
 import ee.lio.service.EmailService;
+import ee.lio.service.TokenService;
 import ee.lio.service.TwoFactorService;
 import ee.lio.service.UserService;
 import ee.lio.utils.JwtUtil;
@@ -20,10 +18,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.stream.Collectors;
 
@@ -37,19 +32,23 @@ public class AuthController {
     private final UserResponseConverter userResponseConverter;
     private final TwoFactorService twoFactorService;
     private final EmailService emailService;
+    private final TokenService tokenService;
 
     public AuthController(UserService userService,
                           AuthenticationManager authenticationManager,
                           JwtUtil jwtTokenUtil,
                           UserResponseConverter userResponseConverter,
                           TwoFactorService twoFactorService,
-                          EmailService emailService) {
+                          EmailService emailService,
+                          TokenService tokenService) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.jwtTokenUtil = jwtTokenUtil;
         this.userResponseConverter = userResponseConverter;
         this.twoFactorService = twoFactorService;
         this.emailService = emailService;
+
+        this.tokenService = tokenService;
     }
 
     @PostMapping(value = "signup")
@@ -116,5 +115,24 @@ public class AuthController {
         userService.savePassword(request);
         return ResponseEntity.ok(new ApiResponse("Password is set successfully",
                 null));
+    }
+
+    @PostMapping(value = "forgot-password")
+    public ResponseEntity<Void> forgotPassword(@RequestBody ForgotPasswordRequest request) {
+        tokenService.handleForgotPassword(request.email());
+        return ResponseEntity.ok().build();//always 200 to avoid user enumeration
+    }
+
+    @GetMapping(value = "reset-password")
+    public ResponseEntity<Void> validateToken(@RequestParam("token") String token) {
+        tokenService.validateResetToken(token);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping(value = "reset-password")
+    public ResponseEntity<Void> resetPassword(@RequestBody ResetPasswordRequest request) {
+        tokenService.resetPassword(request.token(),
+                request.password());
+        return ResponseEntity.ok().build();
     }
 }
