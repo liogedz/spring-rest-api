@@ -1,12 +1,11 @@
-# JAVA SPRINGBOOT CRUD REST API
+# JAVA SPRINGBOOT / ANGULAR CRUD REST API
 
 A comprehensive REST API demonstrating Spring Boot best practices, authentication, and CRUD operations.
-
-# frontend Angular added, `oauth2` work in progress changing to Oauth2
 
 ## Features
 
 - 🔐 JWT-based authentication with 2FA (email verification)
+- 🔑 Oauth login with `Google` and `GitHub`, saves user into DB
 - 📧 Email service integration (Gmail)
 - 👤 User management with role-based access control (USER/ADMIN)
 - ✅ Full CRUD operations (GET, POST, PUT, PATCH, DELETE)
@@ -35,6 +34,10 @@ A comprehensive REST API demonstrating Spring Boot best practices, authenticatio
 - `POST /api/auth/signup` - Register new user
 - `POST /api/auth/login` - Login (triggers 2FA email)
 - `POST /api/auth/verify` - Verify code and receive JWT token
+- `POST /api/auth/set-password` - Set password for Oauth logged users
+- `POST /api/auth/forgot-password` - Initializes forgot password logic
+- `GET /api/auth/validate-reset-password` - Compares token created for forgot-password and one received via e-mail
+- `POST /api/auth/reset-password` - Sets new password
 
 ### Users (Protected)
 
@@ -49,7 +52,7 @@ A comprehensive REST API demonstrating Spring Boot best practices, authenticatio
 
 - Java 21
 - Maven 4.x
-- Angular 21.1.1
+- Angular 21.1.2
 - Gmail account with App Password enabled
 
 ## Setup
@@ -156,7 +159,7 @@ Import the collection: [postman_collection.json](/backend/docs/postman_collectio
 
 ### Example Flow
 
-1. **Signup**: `POST /api/v1/auth/signup`
+1. **Signup**: `POST /api/auth/signup`
 
 ```json
 {
@@ -167,7 +170,7 @@ Import the collection: [postman_collection.json](/backend/docs/postman_collectio
 }
 ```
 
-2. **Login**: `POST /api/v1/auth/login`
+2. **Login**: `POST /api/auth/login`
 
 ```json
 {
@@ -191,38 +194,6 @@ Import the collection: [postman_collection.json](/backend/docs/postman_collectio
 
 ```
 Authorization: Bearer <your-jwt-token>
-```
-
-## Project backend  Structure
-
-```
-├── backend/data/           # db files
-├── backend/docs/           # Postman collection
-├── backend/src/main/java/ee/lio/
-    ├── /config/            # Bean configurations
-    ├── /controller/        # REST endpoints
-    ├── /converter/         # Mapper
-    ├── /dto/               # Request/Response DTOs
-    ├── /exception/         # Custom exceptions
-    ├── /model/             # Entities
-    ├── /repository/        # Data access layer
-    ├── /security/          # JWT filters, authentication
-    ├── /service/           # Business logic
-    └── /utils/             # JWT Util
-
-```
-
-## Project frontend Structure
-
-```
-├──frontend/public/         # icons
-├──frontend/src/app         # root app folder
-    ├──/common/             # common used files
-    ├──/components/         # components
-    ├──/guards/             # guards
-    ├──/interceptors/       # interceptors
-    ├──/services/           # services
-
 ```
 
 ## Key Design Decisions
@@ -250,11 +221,9 @@ This project demonstrates:
 ## Future Enhancements
 
 - [ ] Add refresh token mechanism
-- [ ] Implement password reset functionality
+- [x] Implement password reset functionality
 - [ ] Add pagination for user listing
-- [ ] Docker containerization
 - [ ] Integration tests
-- [ ] API documentation with Swagger/OpenAPI
 
 ## License
 
