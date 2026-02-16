@@ -8,6 +8,8 @@ import {LoginData} from '@common/login-data';
 import {ProfileData} from '@common/profile-data';
 import {VerifyData} from '@common/verify-data';
 import {PasswordData} from '@common/password-data';
+import {ForgotData} from '@common/forgot-data';
+import {ResetPasswordData} from '@common/reset-password-data';
 
 @Injectable({
   providedIn: 'root',
@@ -67,6 +69,18 @@ export class AuthService {
     return this.http.post<ApiResponse>(`${this.apiUrl}/set-password`, passwordData);
   }
 
+  forgotPassword(forgotData: ForgotData) {
+    return this.http.post<void>(`${this.apiUrl}/forgot-password`, forgotData);
+  }
+
+  validateToken(token: string) {
+    return this.http.get<void>(`${this.apiUrl}/validate-reset-password?token=${token}`);
+  }
+
+  resetPassword(resetPasswordData: ResetPasswordData) {
+    return this.http.post<void>(`${this.apiUrl}/reset-password`, resetPasswordData);
+  }
+
   completeLogin(user: ProfileData & { authToken: string }): void {
     localStorage.setItem('authToken', user.authToken);
     localStorage.setItem('currentUser', JSON.stringify(user));
@@ -74,6 +88,5 @@ export class AuthService {
     this.currentUser.set(user);
     this._isAuthenticated.set(true);
     user.confirmed ? this.router.navigate(['/home']) : this.router.navigate(['/set-password'])
-
   }
 }

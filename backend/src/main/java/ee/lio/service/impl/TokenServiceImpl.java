@@ -10,12 +10,15 @@ import ee.lio.repository.UserRepository;
 import ee.lio.service.EmailService;
 import ee.lio.service.TokenService;
 import ee.lio.utils.TokenUtil;
+import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
+@Service
 public class TokenServiceImpl implements TokenService {
 
     @Value("${resetPassword}")
@@ -36,21 +39,26 @@ public class TokenServiceImpl implements TokenService {
         this.passwordEncoder = passwordEncoder;
     }
 
-
+    @Transactional
     @Override
     public void handleForgotPassword(String email) {
         userRepository.findByEmail(email).ifPresent(user -> {
             if (user.getProvider() != AuthProvider.LOCAL) {
                 return;
             }
+
             String rawToken = TokenUtil.generateToken();
             String hashedToken = TokenUtil.hashToken(rawToken);
 
-            PasswordResetToken token = new PasswordResetToken();
+            PasswordResetToken token =
+                    tokenRepository.findByUser(user)
+                            .orElse(new PasswordResetToken());
+
             token.setUser(user);
             token.setTokenHash(hashedToken);
             token.setExpiredAt(Instant.now().plus(15,
                     ChronoUnit.MINUTES));
+            token.setUsed(false);
             tokenRepository.save(token);
             emailService.sendPasswordReset(
                     user.getEmail(),
@@ -59,6 +67,7 @@ public class TokenServiceImpl implements TokenService {
         });
     }
 
+    @Transactional
     @Override
     public void validateResetToken(String rawToken) {
         String hash = TokenUtil.hashToken(rawToken);
@@ -70,6 +79,7 @@ public class TokenServiceImpl implements TokenService {
         }
     }
 
+    @Transactional
     @Override
     public void resetPassword(String rawToken,
                               String password) {

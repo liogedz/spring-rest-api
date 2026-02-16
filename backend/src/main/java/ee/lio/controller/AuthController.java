@@ -123,7 +123,7 @@ public class AuthController {
         return ResponseEntity.ok().build();//always 200 to avoid user enumeration
     }
 
-    @GetMapping(value = "reset-password")
+    @GetMapping(value = "validate-reset-password")
     public ResponseEntity<Void> validateToken(@RequestParam("token") String token) {
         tokenService.validateResetToken(token);
         return ResponseEntity.ok().build();

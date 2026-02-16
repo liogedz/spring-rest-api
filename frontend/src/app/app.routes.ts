@@ -8,11 +8,13 @@ import {Users} from '@components/users/users';
 import {Home} from '@components/home/home';
 import {Verify} from '@components/verify/verify';
 import {SetPassword} from '@components/set-password/set-password';
+import {ForgotPassword} from '@components/forgot-password/forgot-password';
 
 export const routes: Routes = [
   {path: 'login', component: Login, canActivate: [unidentifiedGuard]},
   {path: 'register', component: Register, canActivate: [unidentifiedGuard]},
   {path: 'verify', component: Verify, canActivate: [unidentifiedGuard]},
+  {path: 'forgot-password', component: ForgotPassword, canActivate: [unidentifiedGuard]},
   {path: 'home', component: Home, canActivate: [authGuard]},
   {path: 'profile/:id', component: Profile, canActivate: [authGuard]},
   {path: 'set-password', component: SetPassword, canActivate: [unidentifiedGuard]},
