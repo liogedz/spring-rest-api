@@ -47,7 +47,6 @@ public class AuthController {
         this.userResponseConverter = userResponseConverter;
         this.twoFactorService = twoFactorService;
         this.emailService = emailService;
-
         this.tokenService = tokenService;
     }
 

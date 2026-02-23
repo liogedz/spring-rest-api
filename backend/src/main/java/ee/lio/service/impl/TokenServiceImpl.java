@@ -63,7 +63,6 @@ public class TokenServiceImpl implements TokenService {
             emailService.sendPasswordReset(
                     user.getEmail(),
                     resetPassword + rawToken);
-
         });
     }
 

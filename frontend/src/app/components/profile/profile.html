@@ -58,7 +58,7 @@
       </div>
 
       @if (changeUser()) {
-        <form class="space-y-6" (submit)="updateUser($event)">
+        <form class="space-y-6" (submit)="updateUser($event)" novalidate>
           <div>
             <label for="name" class="block text-sm font-medium text-gray-700 dark:text-white">
               Name
@@ -157,7 +157,7 @@
           </div>
 
           <div>
-            <button type="submit" [disabled]="!isProfileDirty()"
+            <button type="submit" [disabled]="submitDisabled()"
                     class="
                     cursor-pointer group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md
                     text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500

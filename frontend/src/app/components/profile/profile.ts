@@ -1,7 +1,7 @@
 import {Component, computed, OnInit, signal} from '@angular/core';
 import {ProfileData} from '@common/profile-data';
 import {Role} from '@common/role';
-import {email, form, FormField, maxLength, minLength, readonly, validate} from '@angular/forms/signals';
+import {email, form, FormField, maxLength, minLength, readonly, required, validate} from '@angular/forms/signals';
 import {UserService} from '@services/user-service';
 import {AuthService} from '@services/auth-service';
 import {MatSnackBar} from '@angular/material/snack-bar';
@@ -50,7 +50,10 @@ export class Profile implements OnInit {
   profileForm = form(this.profileModel, (fieldPath) => {
     readonly(fieldPath.id);
     minLength(fieldPath.name, 3, {message: 'Minimum 3 characters'});
+    required(fieldPath.name, {message: 'Name is required'});
     email(fieldPath.email, {message: 'Enter a valid email address'});
+    required(fieldPath.email, {message: 'Email is required'});
+    required(fieldPath.role, {message: 'Role is required'});
     minLength(fieldPath.password, 8, {message: 'Must be at least 8 characters'});
     maxLength(fieldPath.password, 100, {message: 'Password is too long'})
     validate(fieldPath.confirm_password, ({value, valueOf}) => {
@@ -92,6 +95,19 @@ export class Profile implements OnInit {
       this.modifyingPassword()
     );
   });
+
+  anyRegFormErrors = computed(() => {
+    return (
+      this.profileForm.name().invalid() ||
+      this.profileForm.email().invalid() ||
+      this.profileForm.role().invalid() ||
+      this.profileForm.password().invalid() ||
+      this.profileForm.confirm_password().invalid()
+    );
+  });
+
+  submitDisabled = computed(() =>
+    this.anyRegFormErrors() || !this.isProfileDirty());
 
   modifyingUser() {
     this.changeUser.update(v => !v);
