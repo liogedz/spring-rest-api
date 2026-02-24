@@ -202,8 +202,37 @@ Authorization: Bearer <your-jwt-token>
 - **Separation of Concerns**: Clear layering (Controller/Service/Repository)
 - **DTO Pattern**: Request/Response objects separate from entities
 - **PUT vs PATCH**: Separate DTOs for full vs partial updates
-- **Authorization**: Users can modify own data, ADMIN can modify all
+- **Authorization**: Users can modify own data (besides the role), ADMIN can modify all. OAuth users are always created
+  with role USER.
+- **OAuth**: Enforces everyone to set password on first login
 - **Exception Handling**: Global exception handler with proper HTTP status codes
+
+## Frontend Notes
+
+- Angular uses Signals-based state management
+- HTTP interceptors attach JWT automatically
+- Auth state is derived from token presence
+
+## Token Policies
+
+- JWT access token: 10 hours
+- 2FA verification code: 5 minutes
+- Password reset token: single-use, 15 minutes
+
+## Security Notes
+
+- H2 is used for development only
+- JWT secret is loaded from environment variables
+- HTTPS is required in production
+- OAuth client secrets must never be committed
+
+## CORS Configuration
+
+CORS is configured to allow requests from:
+
+- http://localhost:4200 (Angular dev server)
+
+Adjust allowed origins in `application.yaml` for production.
 
 ## Learning Focus
 

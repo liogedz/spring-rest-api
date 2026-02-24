@@ -1,5 +1,6 @@
 package ee.lio.security;
 
+import ee.lio.config.AppConfig;
 import jakarta.servlet.http.HttpServletRequest;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Component;
@@ -11,11 +12,18 @@ import java.util.List;
 
 @Component
 public class CorsHandler implements CorsConfigurationSource {
+    private final AppConfig appConfig;
+
+    public CorsHandler(AppConfig appConfig) {
+        this.appConfig = appConfig;
+    }
+
 
     @Override
     public CorsConfiguration getCorsConfiguration(@NonNull HttpServletRequest request) {
+        List<String> origins = appConfig.getAllowedOrigins();
         CorsConfiguration returnValue = new CorsConfiguration();
-        returnValue.setAllowedOriginPatterns(List.of("*"));
+        returnValue.setAllowedOriginPatterns(origins);
         returnValue.setAllowCredentials(true);
         returnValue.setAllowedHeaders(Arrays.asList(
                 "Access-Control-Allow-Headers",
@@ -36,4 +44,6 @@ public class CorsHandler implements CorsConfigurationSource {
         ));
         return returnValue;
     }
+
+
 }
