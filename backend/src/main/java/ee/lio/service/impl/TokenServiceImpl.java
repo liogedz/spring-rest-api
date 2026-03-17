@@ -10,7 +10,7 @@ import ee.lio.repository.UserRepository;
 import ee.lio.service.EmailService;
 import ee.lio.service.TokenService;
 import ee.lio.utils.TokenUtil;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

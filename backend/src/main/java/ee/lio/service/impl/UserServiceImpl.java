@@ -15,7 +15,7 @@ import ee.lio.model.Role;
 import ee.lio.model.User;
 import ee.lio.repository.UserRepository;
 import ee.lio.service.UserService;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

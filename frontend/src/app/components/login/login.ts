@@ -30,7 +30,6 @@ export class Login {
     required(fieldPath.password, {message: 'Password is required'});
   });
 
-
   onLoginSubmit(event: Event) {
     event.preventDefault();
 
