@@ -12,7 +12,6 @@
   </div>
   <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-5xl">
     <div class="bg-white dark:bg-gray-700 shadow sm:rounded-lg">
-
       <div class="grid grid-cols-6 gap-4 px-6 py-3 border-b font-semibold text-sm text-gray-600 dark:text-gray-200">
         <div>ID</div>
         <div>Full Name</div>
@@ -21,7 +20,6 @@
         <div>Modify</div>
         <div>Delete</div>
       </div>
-
       @for (user of users(); track user.id) {
         <div
           class="grid grid-cols-6 gap-4 px-6 py-3 text-sm
@@ -33,7 +31,6 @@
           <div>{{ user.name }}</div>
           <div>{{ user.email }}</div>
           <div class="font-medium">{{ user.role }}</div>
-
           <a title="edit user"
              [routerLink]="['/profile', user.id]"
              class="p-2 rounded-lg
@@ -51,7 +48,6 @@
          transition">
             <img class="h-5 w-5" src="/delete.svg" alt="Edit user">
           </button>
-
         </div>
       }
     </div>

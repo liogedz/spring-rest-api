@@ -2,9 +2,9 @@ package ee.lio.dto.response;
 
 import jakarta.validation.constraints.NotNull;
 
-public record ApiResponse(
+public record ApiResponse<T>(
         @NotNull
         String message,
-        Object data
+        T data
 ) {
 }

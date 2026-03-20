@@ -20,9 +20,9 @@ public class UsersController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse> getAllUsers() {
+    public ResponseEntity<ApiResponse<List<UserResponse>>> getAllUsers() {
         List<UserResponse> users = userService.getAllUsers();
-        return ResponseEntity.ok(new ApiResponse("User list",
+        return ResponseEntity.ok(new ApiResponse<>("User list",
                 users));
     }
 }

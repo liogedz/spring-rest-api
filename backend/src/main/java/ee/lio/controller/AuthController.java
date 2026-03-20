@@ -51,8 +51,8 @@ public class AuthController {
     }
 
     @PostMapping(value = "signup")
-    public ResponseEntity<ApiResponse> register(@Validated @RequestBody SignupRequest request,
-                                                Errors errors) {
+    public ResponseEntity<ApiResponse<UserResponse>> register(@Validated @RequestBody SignupRequest request,
+                                                              Errors errors) {
         if (errors.hasErrors()) {
             String errorDetails = errors.getFieldErrors().stream()
                     .map(e -> e.getField() + ": " + e.getDefaultMessage())
@@ -60,12 +60,12 @@ public class AuthController {
             throw new DataNotValidatedException(errorDetails);
         }
         UserResponse response = userService.createUser(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse("User creation success",
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse<>("User creation success",
                 response));
     }
 
     @PostMapping("login")
-    public ResponseEntity<ApiResponse> createAuthenticationToken(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<ApiResponse<Void>> createAuthenticationToken(@RequestBody LoginRequest loginRequest) {
         String identifier = loginRequest.identifier();
         try {
             authenticationManager.authenticate(
@@ -77,7 +77,7 @@ public class AuthController {
         } catch (BadCredentialsException e) {
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)
-                    .body(new ApiResponse("Invalid username or password",
+                    .body(new ApiResponse<>("Invalid username or password",
                             null));
         }
         User user = userService.getUserByIdentifier(identifier);
@@ -85,12 +85,12 @@ public class AuthController {
         emailService.send2FACode(user.getEmail(),
                 code);
 
-        return ResponseEntity.ok(new ApiResponse("Login successful. A verification code has been sent to your email.",
+        return ResponseEntity.ok(new ApiResponse<>("Login successful. A verification code has been sent to your email.",
                 null));
     }
 
     @PostMapping(value = "verify")
-    public ResponseEntity<ApiResponse> verifyUser(@Validated @RequestBody TwoFactorRequest request) {
+    public ResponseEntity<ApiResponse<UserResponse>> verifyUser(@Validated @RequestBody TwoFactorRequest request) {
 
         String identifier = request.identifier();
         String submittedCode = request.code();
@@ -105,14 +105,14 @@ public class AuthController {
         UserResponse userResponse = userResponseConverter.userToUserResponse(user);
         userResponse.setAuthToken(jwt);
 
-        return ResponseEntity.ok(new ApiResponse("Login successful",
+        return ResponseEntity.ok(new ApiResponse<>("Login successful",
                 userResponse));
     }
 
     @PostMapping(value = "set-password")
-    public ResponseEntity<ApiResponse> setPassword(@Validated @RequestBody SavePassword request) {
+    public ResponseEntity<ApiResponse<Void>> setPassword(@Validated @RequestBody SavePassword request) {
         userService.savePassword(request);
-        return ResponseEntity.ok(new ApiResponse("Password is set successfully",
+        return ResponseEntity.ok(new ApiResponse<>("Password is set successfully",
                 null));
     }
 

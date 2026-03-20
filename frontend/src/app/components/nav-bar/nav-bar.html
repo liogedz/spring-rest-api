@@ -7,7 +7,6 @@
          bg-gray-200 dark:bg-gray-700
          hover:bg-gray-300 dark:hover:bg-gray-600
          transition">
-
       @if (darkThemeSelectorService.currentTheme() === 'light') {
         <img class="h-5 w-5" src="/sun.svg" alt="Light mode">
       } @else if (darkThemeSelectorService.currentTheme() === 'dark') {
@@ -15,9 +14,7 @@
       } @else {
         <img class="h-5 w-5" src="/system.svg" alt="System mode">
       }
-
     </button>
-
     <div class="flex space-x-6">
       <a
         title="Home"
@@ -39,7 +36,6 @@
          transition">
             <img class="h-5 w-5" src="/user.svg" alt="Profile">
           </a>
-
           @if (currentUser()?.role == Role.ADMIN) {
             <a
               title="Manage Users"

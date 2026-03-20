@@ -44,7 +44,6 @@ export class AuthService {
     });
   }
 
-
   logout(): void {
     localStorage.clear();
     this._isAuthenticated.set(false);
@@ -54,19 +53,19 @@ export class AuthService {
   }
 
   registerUser(regData: RegData) {
-    return this.http.post<ApiResponse>(`${this.apiUrl}/signup`, regData);
+    return this.http.post<ApiResponse<RegData>>(`${this.apiUrl}/signup`, regData);
   }
 
   login(loginData: LoginData) {
-    return this.http.post<ApiResponse>(`${this.apiUrl}/login`, loginData);
+    return this.http.post<ApiResponse<LoginData>>(`${this.apiUrl}/login`, loginData);
   }
 
   verify2FA(verifyData: VerifyData) {
-    return this.http.post<ApiResponse>(`${this.apiUrl}/verify`, verifyData);
+    return this.http.post<ApiResponse<ProfileData & { authToken: string }>>(`${this.apiUrl}/verify`, verifyData);
   }
 
   savePassword(passwordData: PasswordData) {
-    return this.http.post<ApiResponse>(`${this.apiUrl}/set-password`, passwordData);
+    return this.http.post<ApiResponse<PasswordData>>(`${this.apiUrl}/set-password`, passwordData);
   }
 
   forgotPassword(forgotData: ForgotData) {

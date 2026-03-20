@@ -19,11 +19,10 @@ export class UserService {
     private http: HttpClient,
     private snackBar: MatSnackBar
   ) {
-
   }
 
   getAllUsers() {
-    this.http.get<ApiResponse>(`${this.apiUrl}s`).subscribe({
+    this.http.get<ApiResponse<ProfileData[]>>(`${this.apiUrl}s`).subscribe({
       next: (response) =>
         this.usersSignal.set(response.data),
       error: (err: HttpErrorResponse) => {
@@ -39,11 +38,11 @@ export class UserService {
   }
 
   getUserById(id: number) {
-    return this.http.get<ApiResponse>(`${this.apiUrl}/${id}`)
+    return this.http.get<ApiResponse<ProfileData>>(`${this.apiUrl}/${id}`)
   }
 
   patchUser(profileData: ProfileData) {
-    return this.http.patch<ApiResponse>(`${this.apiUrl}/${profileData.id}`, profileData);
+    return this.http.patch<ApiResponse<ProfileData>>(`${this.apiUrl}/${profileData.id}`, profileData);
   }
 
   getUserSnapshot(id: number) {
@@ -51,6 +50,6 @@ export class UserService {
   }
 
   deleteUser(id: number) {
-    return this.http.delete<ApiResponse>(`${this.apiUrl}/${id}`);
+    return this.http.delete<ApiResponse<void>>(`${this.apiUrl}/${id}`);
   }
 }

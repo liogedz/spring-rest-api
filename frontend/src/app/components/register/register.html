@@ -7,7 +7,6 @@
       Registration form
     </h2>
   </div>
-
   <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
     <div class="bg-white dark:bg-gray-700 py-8 px-4 shadow sm:rounded-lg sm:px-10">
       <form class="space-y-6" (submit)="onSubmit($event)" novalidate>
@@ -19,7 +18,6 @@
             <input [formField]="regForm.name" id="name" type="text"
                    class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 dark:text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                    placeholder="Enter your name">
-
             @if (regForm.name().touched() && regForm.name().invalid()) {
               <ul>
                 @for (error of regForm.name().errors(); track $index) {

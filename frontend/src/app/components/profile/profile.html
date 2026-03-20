@@ -11,7 +11,6 @@
   </div>
   <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
     <div class="bg-white dark:bg-gray-700 py-8 px-4 shadow sm:rounded-lg sm:px-10">
-
       <div class="flex justify-end pt-4 px-4">
         <button
           (click)="confirmAndDelete(profileModel().id)"
@@ -58,7 +57,6 @@
           {{ changeUser() ? 'Close modify' : 'Modify' }}
         </button>
       </div>
-
       @if (changeUser()) {
         <form class="space-y-6" (submit)="updateUser($event)" novalidate>
           <div>
@@ -69,7 +67,6 @@
               <input [formField]="profileForm.name" id="name" type="text"
                      class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 dark:text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                      placeholder="Enter your name">
-
               @if (profileForm.name().touched() && profileForm.name().invalid()) {
                 <ul>
                   @for (error of profileForm.name().errors(); track $index) {
@@ -87,7 +84,6 @@
               <input [formField]="profileForm.email" id="email" type="email"
                      class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 dark:text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                      placeholder="Enter your email address">
-
               @if (profileForm.email().touched() && profileForm.email().invalid()) {
                 <ul>
                   @for (error of profileForm.email().errors(); track $index) {
@@ -157,7 +153,6 @@
               }
             </div>
           </div>
-
           <div>
             <button type="submit" [disabled]="submitDisabled()"
                     class="

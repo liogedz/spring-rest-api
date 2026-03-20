@@ -21,43 +21,43 @@ public class UserController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<ApiResponse> getById(@PathVariable Integer id) {
+    public ResponseEntity<ApiResponse<UserResponse>> getById(@PathVariable Integer id) {
 
-        return ResponseEntity.ok(new ApiResponse("User found",
+        return ResponseEntity.ok(new ApiResponse<>("User found",
                 userService.getUserById(id)
         ));
     }
 
     @GetMapping("current")
-    public ResponseEntity<ApiResponse> getCurrentUser() {
-        return ResponseEntity.ok(new ApiResponse("Current User",
+    public ResponseEntity<ApiResponse<UserResponse>> getCurrentUser() {
+        return ResponseEntity.ok(new ApiResponse<>("Current User",
                 userService.getCurrentUser()));
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<ApiResponse> updateUser(@RequestBody UpdateRequest request,
-                                                  @PathVariable Integer id) {
+    public ResponseEntity<ApiResponse<UserResponse>> updateUser(@RequestBody UpdateRequest request,
+                                                                @PathVariable Integer id) {
         UserResponse updatedUser = userService.updateUser(request,
                 id);
-        return ResponseEntity.ok(new ApiResponse("User with id: " + id + " updated successfully",
+        return ResponseEntity.ok(new ApiResponse<>("User with id: " + id + " updated successfully",
                 updatedUser));
     }
 
     @PatchMapping("{id}")
-    public ResponseEntity<ApiResponse> patchUser(@RequestBody
-                                                 PatchRequest request,
-                                                 @PathVariable Integer id) {
+    public ResponseEntity<ApiResponse<UserResponse>> patchUser(@RequestBody
+                                                               PatchRequest request,
+                                                               @PathVariable Integer id) {
         System.out.println(request.toString());
         UserResponse patchedUser = userService.patchUser(request,
                 id);
-        return ResponseEntity.ok(new ApiResponse("User with id: " + id + " patched successfully",
+        return ResponseEntity.ok(new ApiResponse<>("User with id: " + id + " patched successfully",
                 patchedUser));
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<ApiResponse> removeUser(@PathVariable Integer id) {
+    public ResponseEntity<ApiResponse<Void>> removeUser(@PathVariable Integer id) {
         userService.deleteUser(id);
-        return ResponseEntity.ok(new ApiResponse("User deleted with id: " + id,
+        return ResponseEntity.ok(new ApiResponse<>("User deleted with id: " + id,
                 null));
     }
 }
