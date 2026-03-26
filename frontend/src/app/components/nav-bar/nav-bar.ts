@@ -11,6 +11,7 @@ import {RouterLink} from '@angular/router';
   ],
   templateUrl: './nav-bar.html',
   styleUrl: './nav-bar.css',
+  standalone: true
 })
 export class NavBar {
   protected readonly Role = Role;

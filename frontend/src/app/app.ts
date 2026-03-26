@@ -7,6 +7,7 @@ import {NavBar} from '@components/nav-bar/nav-bar';
   imports: [RouterOutlet, NavBar],
   templateUrl: './app.html',
   styleUrl: './app.css',
+  standalone: true
 })
 export class App {
 
