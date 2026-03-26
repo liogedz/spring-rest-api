@@ -14,7 +14,6 @@ import ee.lio.utils.JwtUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
@@ -67,25 +66,21 @@ public class AuthController {
     @PostMapping("login")
     public ResponseEntity<ApiResponse<Void>> createAuthenticationToken(@RequestBody LoginRequest loginRequest) {
         String identifier = loginRequest.identifier();
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            identifier,
-                            loginRequest.password()
-                    )
-            );
-        } catch (BadCredentialsException e) {
-            return ResponseEntity
-                    .status(HttpStatus.UNAUTHORIZED)
-                    .body(new ApiResponse<>("Invalid username or password",
-                            null));
-        }
+
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        identifier,
+                        loginRequest.password()
+                )
+        );
+
         User user = userService.getUserByIdentifier(identifier);
         String code = twoFactorService.generateAndStoreCode(identifier);
         emailService.send2FACode(user.getEmail(),
                 code);
 
-        return ResponseEntity.ok(new ApiResponse<>("Login successful. A verification code has been sent to your email.",
+        return ResponseEntity.ok(new ApiResponse<>(
+                "Login successful. A verification code has been sent to your email.",
                 null));
     }
 

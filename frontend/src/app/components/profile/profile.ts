@@ -1,17 +1,29 @@
 import {Component, computed, OnInit, signal} from '@angular/core';
 import {ProfileData} from '@common/profile-data';
 import {Role} from '@common/role';
-import {email, form, FormField, maxLength, minLength, readonly, required, validate} from '@angular/forms/signals';
+import {
+  email,
+  form,
+  FormField,
+  FormRoot,
+  maxLength,
+  minLength,
+  readonly,
+  required,
+  validate
+} from '@angular/forms/signals';
 import {UserService} from '@services/user-service';
 import {AuthService} from '@services/auth-service';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {HttpErrorResponse} from '@angular/common/http';
 import {ActivatedRoute} from '@angular/router';
+import {firstValueFrom} from 'rxjs';
 
 @Component({
   selector: 'app-profile',
   imports: [
-    FormField
+    FormField,
+    FormRoot
   ],
   templateUrl: './profile.html',
   styleUrl: './profile.css',
@@ -48,26 +60,56 @@ export class Profile implements OnInit {
   });
 
   profileForm = form(this.profileModel, (fieldPath) => {
-    readonly(fieldPath.id);
-    minLength(fieldPath.name, 3, {message: 'Minimum 3 characters'});
-    required(fieldPath.name, {message: 'Name is required'});
-    email(fieldPath.email, {message: 'Enter a valid email address'});
-    required(fieldPath.email, {message: 'Email is required'});
-    required(fieldPath.role, {message: 'Role is required'});
-    minLength(fieldPath.password, 8, {message: 'Must be at least 8 characters'});
-    maxLength(fieldPath.password, 100, {message: 'Password is too long'})
-    validate(fieldPath.confirm_password, ({value, valueOf}) => {
-      const confirmPassword = value();
-      const password = valueOf(fieldPath.password);
-      if (confirmPassword !== password) {
-        return {
-          kind: 'passwordMismatch',
-          message: 'Passwords do not match',
-        };
+      readonly(fieldPath.id);
+      minLength(fieldPath.name, 3, {message: 'Minimum 3 characters'});
+      required(fieldPath.name, {message: 'Name is required'});
+      email(fieldPath.email, {message: 'Enter a valid email address'});
+      required(fieldPath.email, {message: 'Email is required'});
+      required(fieldPath.role, {message: 'Role is required'});
+      minLength(fieldPath.password, 8, {message: 'Must be at least 8 characters'});
+      maxLength(fieldPath.password, 100, {message: 'Password is too long'})
+      validate(fieldPath.confirm_password, ({value, valueOf}) => {
+        const confirmPassword = value();
+        const password = valueOf(fieldPath.password);
+        if (confirmPassword !== password) {
+          return {
+            kind: 'passwordMismatch',
+            message: 'Passwords do not match',
+          };
+        }
+        return null;
+      });
+    },
+    {
+      submission: {
+        action: async f => {
+          const value = f().value();
+          try {
+            const response = await firstValueFrom(this.userService.patchUser(value));
+            const {data, message} = response;
+            this.snackBar.open(
+              `Congratulations ${data.name}! ${message}`,
+              'ok',
+              {
+                duration: 3000,
+                panelClass: ['success-snackbar']
+              });
+            if (this.isSelf()) {
+              this.authService.logout();
+            }
+          } catch (err: any) {
+            this.snackBar.open(
+              err.error.error,
+              'Close',
+              {
+                duration: 3000,
+                panelClass: ['error-snackbar']
+              });
+          }
+        }
       }
-      return null;
-    });
-  });
+    }
+  );
 
   setProfile(profileData: ProfileData) {
     this.profileForm.id().value.set(profileData.id);
@@ -111,40 +153,6 @@ export class Profile implements OnInit {
 
   modifyingUser() {
     this.changeUser.update(v => !v);
-  }
-
-  updateUser(event: Event) {
-    event.preventDefault();
-    // maybe need to add payload, mapped from this.profileForm values
-
-    this.userService.patchUser(this.profileModel())
-      .subscribe({
-        next: (response) => {
-          const {data, message} = response;
-          this.snackBar.open(
-            `Congratulations ${data.name}! ${message}`,
-            'ok',
-            {
-              duration: 3000,
-              panelClass: ['success-snackbar']
-            });
-          if (this.isSelf()) {
-            this.authService.logout();
-          }
-        },
-        error: (error: HttpErrorResponse) => {
-          const errorMsg = error.status === 409
-            ? "Username already exists!"
-            : "User modification failed!";
-          this.snackBar.open(
-            errorMsg,
-            'Close',
-            {
-              duration: 3000,
-              panelClass: ['error-snackbar']
-            });
-        }
-      });
   }
 
   private loadProfileUser(id: number) {

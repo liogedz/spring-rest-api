@@ -2,7 +2,7 @@ import {Component, computed, signal} from '@angular/core';
 import {
   email,
   form,
-  FormField,
+  FormField, FormRoot,
   maxLength,
   minLength,
   readonly,
@@ -14,13 +14,13 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {ForgotData} from '@common/forgot-data';
 import {ResetPasswordData} from '@common/reset-password-data';
 import {AuthService} from '@services/auth-service';
-import {HttpErrorResponse} from '@angular/common/http';
-import {finalize} from 'rxjs';
+import {firstValueFrom} from 'rxjs';
 
 @Component({
   selector: 'app-forgot-password',
   imports: [
-    FormField
+    FormField,
+    FormRoot
   ],
   templateUrl: './forgot-password.html',
   styleUrl: './forgot-password.css',
@@ -47,9 +47,37 @@ export class ForgotPassword {
   });
 
   forgotForm = form(this.forgotModel, (fieldPath) => {
-    required(fieldPath.email, {message: 'Email is required'});
-    email(fieldPath.email, {message: 'Enter a valid email address'});
-  });
+      required(fieldPath.email, {message: 'Email is required'});
+      email(fieldPath.email, {message: 'Enter a valid email address'});
+    },
+    {
+      submission: {
+        action: async f => {
+          const value = f().value();
+          try {
+            await firstValueFrom(this.authService.forgotPassword(value));
+            this.waitForEmailLink.set(true);
+            this.snackBar.open(
+              'Link is sent to entered e-mail address, please follow to continue ...',
+              'ok',
+              {
+                duration: 4000,
+                panelClass: ['snackbar-success']
+              });
+
+          } catch (err: any) {
+            this.snackBar.open(
+              err.error.error,
+              'close',
+              {
+                duration: 3000,
+                panelClass: ['error-snackbar']
+              });
+          }
+        }
+      }
+    }
+  );
 
   forgotSubmitDisabled = computed(() =>
     this.forgotForm.email().invalid() && this.forgotForm.email().touched());
@@ -61,23 +89,53 @@ export class ForgotPassword {
   });
 
   resetPasswordForm = form(this.resetPasswordModel, (fieldPath) => {
-    readonly(fieldPath.token);
-    minLength(fieldPath.password, 8, {message: 'Must be at least 8 characters'});
-    maxLength(fieldPath.password, 100, {message: 'Password is too long'})
-    required(fieldPath.password, {message: 'Password is required'});
-    required(fieldPath.confirm_password, {message: 'Confirm password is required'});
-    validate(fieldPath.confirm_password, ({value, valueOf}) => {
-      const confirmPassword = value();
-      const password = valueOf(fieldPath.password);
-      if (confirmPassword !== password) {
-        return {
-          kind: 'passwordMismatch',
-          message: 'Passwords do not match',
-        };
+      readonly(fieldPath.token);
+      minLength(fieldPath.password, 8, {message: 'Must be at least 8 characters'});
+      maxLength(fieldPath.password, 100, {message: 'Password is too long'})
+      required(fieldPath.password, {message: 'Password is required'});
+      required(fieldPath.confirm_password, {message: 'Confirm password is required'});
+      validate(fieldPath.confirm_password, ({value, valueOf}) => {
+        const confirmPassword = value();
+        const password = valueOf(fieldPath.password);
+        if (confirmPassword !== password) {
+          return {
+            kind: 'passwordMismatch',
+            message: 'Passwords do not match',
+          };
+        }
+        return null;
+      });
+    },
+    {
+      submission: {
+        action: async f => {
+          const value = f().value();
+          try {
+            await firstValueFrom(this.authService.resetPassword(value));
+            this.snackBar.open(
+              'Password is re-set, please login',
+              'ok',
+              {
+                duration: 3000,
+                panelClass: ['success-snackbar']
+              }
+            );
+          } catch (error) {
+            this.snackBar.open(
+              'Password reset failed, try again',
+              'close',
+              {
+                duration: 3000,
+                panelClass: ['error-snackbar']
+              }
+            );
+          } finally {
+            this.router.navigate(['/login']);
+          }
+        }
       }
-      return null;
-    });
-  });
+    }
+  );
 
   hasResetPasswordErrors = computed(() =>
     this.resetPasswordForm.password().invalid() ||
@@ -89,32 +147,6 @@ export class ForgotPassword {
 
   passwordSubmitDisabled = computed(() =>
     this.hasResetPasswordErrors() && this.passwordResetFormTouched());
-
-  protected onForgotPasswordSubmit(event: SubmitEvent) {
-    event.preventDefault()
-    this.authService.forgotPassword(this.forgotModel())
-      .subscribe({
-        next: () => {
-          this.waitForEmailLink.set(true);
-          this.snackBar.open(
-            'Link is sent to entered e-mail address, please follow to continue ...',
-            'ok',
-            {
-              duration: 4000,
-              panelClass: ['snackbar-success']
-            });
-        },
-        error: (error: HttpErrorResponse) => {
-          this.snackBar.open(
-            error.message,
-            'close',
-            {
-              duration: 3000,
-              panelClass: ['error-snackbar']
-            });
-        }
-      });
-  }
 
   validateToken(token: string) {
     this.authService.validateToken(token)
@@ -134,36 +166,5 @@ export class ForgotPassword {
           this.router.navigate(['/login']);
         }
       });
-  }
-
-  protected submitNewPassword(event: SubmitEvent) {
-    event.preventDefault();
-    this.authService.resetPassword(this.resetPasswordModel())
-      .pipe(
-        finalize(() => {
-          this.router.navigate(['/login']);
-        })
-      )
-      .subscribe({
-        next: () => {
-          this.snackBar.open(
-            'Password is re-set, please login',
-            'ok',
-            {
-              duration: 3000,
-              panelClass: ['success-snackbar']
-            });
-        },
-        error: () => {
-          this.snackBar.open(
-            'Password reset failed, try again',
-            'close',
-            {
-              duration: 3000,
-              panelClass: ['error-snackbar']
-            });
-        }
-      });
-
   }
 }

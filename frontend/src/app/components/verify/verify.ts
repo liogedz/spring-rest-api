@@ -1,28 +1,21 @@
 import {Component, computed, signal} from '@angular/core';
-import {form, FormField, readonly, required} from '@angular/forms/signals';
+import {form, FormField, FormRoot, readonly, required} from '@angular/forms/signals';
 import {VerifyData} from '@common/verify-data';
 import {AuthService} from '@services/auth-service';
 import {ActivatedRoute} from '@angular/router';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {firstValueFrom} from 'rxjs';
 
 @Component({
   selector: 'app-verify',
   imports: [
-    FormField
+    FormField,
+    FormRoot
   ],
   templateUrl: './verify.html',
   styleUrl: './verify.css',
 })
 export class Verify {
-  verifyModel = signal<VerifyData>({
-    identifier: '',
-    code: ''
-  });
-
-  verifyForm = form(this.verifyModel, (fieldPath) => {
-    readonly(fieldPath.identifier);
-    required(fieldPath.code, {message: 'Code is required'});
-  });
 
   constructor(
     private authService: AuthService,
@@ -36,20 +29,39 @@ export class Verify {
     });
   }
 
-  onTwoFASubmit(event: Event) {
-    event.preventDefault();
-    if (this.isVerifyDisabled()) return;
+  verifyModel = signal<VerifyData>({
+    identifier: '',
+    code: ''
+  });
 
-    this.authService.verify2FA(this.verifyModel())
-      .subscribe({
-        next: (response) =>
-          this.authService.completeLogin(response.data),
-        error: () =>
-          this.snackBar.open('Invalid verification code', 'close', {
-            duration: 3000
-          })
-      });
-  }
+  verifyForm = form(this.verifyModel, (fieldPath) => {
+      readonly(fieldPath.identifier);
+      required(fieldPath.code, {message: 'Code is required'});
+    },
+    {
+      submission: {
+        action: async f => {
+          if (this.isVerifyDisabled()) return;
+          const value = f().value();
+
+          try {
+            const response = await firstValueFrom(
+              this.authService.verify2FA(value)
+            );
+            this.authService.completeLogin(response.data)
+          } catch (err: any) {
+            this.snackBar.open(
+              err.error.error,
+              'close',
+              {
+                duration: 3000,
+                panelClass: ['error-snackbar']
+              }
+            );
+          }
+        }
+      }
+    });
 
   isVerifyDisabled = computed(() =>
     this.verifyForm.code().invalid() && this.verifyForm.code().touched()

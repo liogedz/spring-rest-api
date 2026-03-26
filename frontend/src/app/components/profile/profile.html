@@ -58,7 +58,7 @@
         </button>
       </div>
       @if (changeUser()) {
-        <form class="space-y-6" (submit)="updateUser($event)" novalidate>
+        <form class="space-y-6" [formRoot]="profileForm">
           <div>
             <label for="name" class="block text-sm font-medium text-gray-700 dark:text-white">
               Name

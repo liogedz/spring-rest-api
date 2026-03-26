@@ -2,7 +2,6 @@ package ee.lio.service.impl;
 
 import ee.lio.exceptions.ForbiddenException;
 import ee.lio.exceptions.ResourceNotFoundException;
-import ee.lio.model.AuthProvider;
 import ee.lio.model.PasswordResetToken;
 import ee.lio.model.User;
 import ee.lio.repository.TokenRepository;
@@ -43,9 +42,6 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public void handleForgotPassword(String email) {
         userRepository.findByEmail(email).ifPresent(user -> {
-            if (user.getProvider() != AuthProvider.LOCAL) {
-                return;
-            }
 
             String rawToken = TokenUtil.generateToken();
             String hashedToken = TokenUtil.hashToken(rawToken);
