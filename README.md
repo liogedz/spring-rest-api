@@ -14,6 +14,7 @@ A comprehensive REST API demonstrating Spring Boot best practices, authenticatio
 - 🗄️ H2 in-memory database
 - 🎯 Clean architecture (Controller → Service → Repository)
 - 🅰️ Angular full Signals Forms and Signals based architecture
+- 🔍 Pagination and search for administrating Users
 
 ## Tech Stack
 
@@ -205,7 +206,8 @@ Authorization: Bearer <your-jwt-token>
 - **Authorization**: Users can modify own data (besides the role), ADMIN can modify all. OAuth users are always created
   with role USER.
 - **OAuth**: Enforces everyone to set password on first login
-- **Exception Handling**: Global exception handler with proper HTTP status codes
+- **Exception Handling**: Global exception handler with proper HTTP status codes and ErrorResponse DTO
+- **Pagination Administrating Users**
 
 ## Frontend Notes
 

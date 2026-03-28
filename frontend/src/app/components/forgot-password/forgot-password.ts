@@ -66,7 +66,7 @@ export class ForgotPassword {
               });
 
           } catch (err: any) {
-            this.showError(err)
+            this.showError(err.error.message);
           }
         }
       }
@@ -115,7 +115,7 @@ export class ForgotPassword {
               }
             );
           } catch (err: any) {
-            this.showError(err)
+            this.showError(err.error.message);
           } finally {
             this.router.navigate(['/login']);
           }
@@ -143,7 +143,7 @@ export class ForgotPassword {
           this.resetPasswordForm.token().value.set(token);
         },
         error: (err: any) => {
-          this.showError(err);
+          this.showError(err.error.message);
           this.router.navigate(['/login']);
         }
       });

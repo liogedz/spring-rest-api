@@ -97,7 +97,7 @@ export class Profile implements OnInit {
               this.authService.logout();
             }
           } catch (err: any) {
-            this.showError(err)
+            this.showError(err.error.message);
           }
         }
       }
@@ -168,7 +168,7 @@ export class Profile implements OnInit {
           this.originalProfile.set(structuredClone(response.data));
         },
         error: (err: any) => {
-          this.showError(err);
+          this.showError(err.error.message);
         }
       });
     }
@@ -198,7 +198,7 @@ export class Profile implements OnInit {
           this.authService.logout();
         },
         error: (err: any) => {
-          this.showError(err)
+          this.showError(err.error.message);
         }
       });
   }

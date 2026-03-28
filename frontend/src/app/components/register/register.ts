@@ -73,7 +73,7 @@ export class Register {
             this.router.navigate(["/login"]);
           } catch (err: any) {
             this.snackBar.open(
-              err.error.error,
+              err.error.message,
               'Close',
               {
                 duration: 0,

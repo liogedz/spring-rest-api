@@ -63,7 +63,7 @@ export class SetPassword {
             this.router.navigate(['/home']);
           } catch (err: any) {
             this.snackBar.open(
-              err.error.error,
+              err.error.message,
               'Close',
               {
                 duration: 0,

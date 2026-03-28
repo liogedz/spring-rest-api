@@ -55,7 +55,7 @@ export class Login {
             );
           } catch (err: any) {
             this.snackBar.open(
-              err.error.error,
+              err.error.message,
               'close',
               {
                 duration: 0,

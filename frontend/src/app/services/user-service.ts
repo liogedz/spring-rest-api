@@ -36,7 +36,7 @@ export class UserService {
         this.pagedUsers.set(response.data),
       error: (err: any) => {
         this.snackBar.open(
-          err.error.error,
+          err.error.message,
           'close',
           {
             duration: 0,
