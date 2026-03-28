@@ -58,7 +58,7 @@ export class Login {
               err.error.error,
               'close',
               {
-                duration: 3000,
+                duration: 0,
                 panelClass: ['error-snackbar']
               }
             );

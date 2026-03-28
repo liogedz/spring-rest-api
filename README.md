@@ -13,7 +13,7 @@ A comprehensive REST API demonstrating Spring Boot best practices, authenticatio
 - 📝 Bean validation
 - 🗄️ H2 in-memory database
 - 🎯 Clean architecture (Controller → Service → Repository)
-- 🅰️ Angular experimental Signals Forms and Signals based architecture
+- 🅰️ Angular full Signals Forms and Signals based architecture
 
 ## Tech Stack
 

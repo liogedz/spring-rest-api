@@ -76,7 +76,7 @@ export class Register {
               err.error.error,
               'Close',
               {
-                duration: 3000,
+                duration: 0,
                 panelClass: ['error-snackbar']
               });
           }

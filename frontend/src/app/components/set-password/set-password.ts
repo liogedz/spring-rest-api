@@ -66,8 +66,8 @@ export class SetPassword {
               err.error.error,
               'Close',
               {
-                duration: 3000,
-                panelClass: ['error=snackbar']
+                duration: 0,
+                panelClass: ['error-snackbar']
               });
           }
         }

@@ -61,18 +61,12 @@ export class ForgotPassword {
               'Link is sent to entered e-mail address, please follow to continue ...',
               'ok',
               {
-                duration: 4000,
+                duration: 0,
                 panelClass: ['snackbar-success']
               });
 
           } catch (err: any) {
-            this.snackBar.open(
-              err.error.error,
-              'close',
-              {
-                duration: 3000,
-                panelClass: ['error-snackbar']
-              });
+            this.showError(err)
           }
         }
       }
@@ -120,15 +114,8 @@ export class ForgotPassword {
                 panelClass: ['success-snackbar']
               }
             );
-          } catch (error) {
-            this.snackBar.open(
-              'Password reset failed, try again',
-              'close',
-              {
-                duration: 3000,
-                panelClass: ['error-snackbar']
-              }
-            );
+          } catch (err: any) {
+            this.showError(err)
           } finally {
             this.router.navigate(['/login']);
           }
@@ -155,16 +142,17 @@ export class ForgotPassword {
           this.resetPasswordActive.set(true);
           this.resetPasswordForm.token().value.set(token);
         },
-        error: () => {
-          this.snackBar.open(
-            'Something went wrong, try to reset password again',
-            'close',
-            {
-              duration: 4000,
-              panelClass: ['error-snackbar']
-            });
+        error: (err: any) => {
+          this.showError(err);
           this.router.navigate(['/login']);
         }
       });
+  }
+
+  showError(message: string) {
+    this.snackBar.open(message, 'Close', {
+      duration: 0,
+      panelClass: ['error-snackbar']
+    });
   }
 }

@@ -1,4 +1,4 @@
-package ee.lio;
+package ee.lio.advice;
 
 import ee.lio.dto.response.ErrorResponse;
 import ee.lio.exceptions.*;

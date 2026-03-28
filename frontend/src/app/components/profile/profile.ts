@@ -15,7 +15,6 @@ import {
 import {UserService} from '@services/user-service';
 import {AuthService} from '@services/auth-service';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {HttpErrorResponse} from '@angular/common/http';
 import {ActivatedRoute} from '@angular/router';
 import {firstValueFrom} from 'rxjs';
 
@@ -98,13 +97,7 @@ export class Profile implements OnInit {
               this.authService.logout();
             }
           } catch (err: any) {
-            this.snackBar.open(
-              err.error.error,
-              'Close',
-              {
-                duration: 3000,
-                panelClass: ['error-snackbar']
-              });
+            this.showError(err)
           }
         }
       }
@@ -174,14 +167,8 @@ export class Profile implements OnInit {
           this.setProfile(response.data);
           this.originalProfile.set(structuredClone(response.data));
         },
-        error: (err: HttpErrorResponse) => {
-          this.snackBar.open(
-            err.message,
-            'close',
-            {
-              duration: 3000,
-              panelClass: ['error-snackbar']
-            });
+        error: (err: any) => {
+          this.showError(err);
         }
       });
     }
@@ -210,15 +197,16 @@ export class Profile implements OnInit {
             });
           this.authService.logout();
         },
-        error: (error: HttpErrorResponse) => {
-          this.snackBar.open(
-            error.message,
-            'Close',
-            {
-              duration: 3000,
-              panelClass: ['error-snackbar']
-            });
+        error: (err: any) => {
+          this.showError(err)
         }
       });
+  }
+
+  showError(message: string) {
+    this.snackBar.open(message, 'Close', {
+      duration: 0,
+      panelClass: ['error-snackbar']
+    });
   }
 }
