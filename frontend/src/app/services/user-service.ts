@@ -1,9 +1,11 @@
-import {Injectable, signal} from '@angular/core';
+import {computed, Injectable, signal} from '@angular/core';
 import {ENVIRONMENT} from "@common/environment";
-import {HttpClient, HttpErrorResponse} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {ProfileData} from '@common/profile-data';
 import {ApiResponse} from '@common/api-response';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {PagedResponse} from '@common/paged-response';
+import {UserQuery} from '@common/user-query';
 
 @Injectable({
   providedIn: 'root',
@@ -11,9 +13,9 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 export class UserService {
   private apiUrl = `${ENVIRONMENT.apiUrl}/user`
 
-  private usersSignal = signal<ProfileData[]>([]);
-  users = this.usersSignal.asReadonly();
 
+  users = computed(() => this.pagedUsers()?.content ?? []);
+  pagedUsers = signal<PagedResponse<ProfileData> | null>(null);
 
   constructor(
     private http: HttpClient,
@@ -21,16 +23,23 @@ export class UserService {
   ) {
   }
 
-  getAllUsers() {
-    this.http.get<ApiResponse<ProfileData[]>>(`${this.apiUrl}s`).subscribe({
+  getAllUsers(query: UserQuery): void {
+    const params = new HttpParams()
+      .set('page', query.page)
+      .set('size', query.size)
+      .set('search', query.search)
+      .set('sortBy', query.sortBy)
+      .set('sortDir', query.sortDir);
+
+    this.http.get<ApiResponse<PagedResponse<ProfileData>>>(`${this.apiUrl}s`, {params}).subscribe({
       next: (response) =>
-        this.usersSignal.set(response.data),
-      error: (err: HttpErrorResponse) => {
+        this.pagedUsers.set(response.data),
+      error: (err: any) => {
         this.snackBar.open(
-          err.message,
+          err.error.error,
           'close',
           {
-            duration: 3000,
+            duration: 0,
             panelClass: ['error-snackbar']
           });
       }

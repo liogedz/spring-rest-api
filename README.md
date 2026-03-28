@@ -251,7 +251,7 @@ This project demonstrates:
 
 - [ ] Add refresh token mechanism
 - [x] Implement password reset functionality
-- [ ] Add pagination for user listing
+- [x] Add pagination for user listing
 - [ ] Integration tests
 
 ## License

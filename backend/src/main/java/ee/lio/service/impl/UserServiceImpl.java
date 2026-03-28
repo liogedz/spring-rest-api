@@ -15,6 +15,11 @@ import ee.lio.model.Role;
 import ee.lio.model.User;
 import ee.lio.repository.UserRepository;
 import ee.lio.service.UserService;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -28,7 +33,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -84,11 +88,32 @@ public class UserServiceImpl implements UserService {
         user.setConfirmed(true);
     }
 
-    @Override
-    public List<UserResponse> getAllUsers() {
-        return userRepository.findAll().stream()
-                .map(userResponseConverter::userToUserResponse)
-                .collect(Collectors.toList());
+    public Page<UserResponse> getAllUsers(int page,
+                                          int size,
+                                          String search,
+                                          String sortBy,
+                                          String sortDir) {
+        Sort.Direction direction = sortDir.equalsIgnoreCase("desc")
+                ? Sort.Direction.DESC : Sort.Direction.ASC;
+
+        // whitelist sortable fields to prevent injection
+        List<String> allowed = List.of("id",
+                "name",
+                "email",
+                "role");
+        String safeSort = allowed.contains(sortBy) ? sortBy : "id";
+
+        Pageable pageable = PageRequest.of(page,
+                size,
+                Sort.by(direction,
+                        safeSort));
+
+        Page<User> result = (search == null || search.isBlank())
+                ? userRepository.findAll(pageable)
+                : userRepository.search(search,
+                pageable);
+
+        return result.map(userResponseConverter::userToUserResponse);
     }
 
     @Override

@@ -1,7 +1,8 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, computed, effect, inject, signal} from '@angular/core';
 import {UserService} from '@services/user-service';
 import {RouterLink} from '@angular/router';
 import {AuthService} from '@services/auth-service';
+import {UserQuery} from '@common/user-query';
 
 @Component({
   selector: 'app-users',
@@ -11,15 +12,55 @@ import {AuthService} from '@services/auth-service';
   templateUrl: './users.html',
   styleUrl: './users.css',
 })
-export class Users implements OnInit {
+export class Users {
 
   private userService = inject(UserService);
   private authService: AuthService = inject(AuthService);
   users = this.userService.users;
   currentUser = this.authService.currentUser;
+  paged = this.userService.pagedUsers;
 
-  ngOnInit(): void {
-    this.userService.getAllUsers();
+  query = signal<UserQuery>({
+    page: 0,
+    size: 10,
+    search: '',
+    sortBy: 'id',
+    sortDir: 'asc',
+  });
+
+  pages = computed(() =>
+    Array.from({length: this.paged()?.totalPages ?? 0}, (_, i) => i)
+  );
+
+  private _ = effect(() => this.userService.getAllUsers(this.query()));
+
+  goToPage(page: number): void {
+    this.query.update(q => ({...q, page}));
+  }
+
+  onSearch(event: Event): void {
+    const search = (event.target as HTMLInputElement).value;
+    this.query.update(q => ({...q, search, page: 0}));
+  }
+
+  onSizeChange(event: Event): void {
+    const size = +(event.target as HTMLSelectElement).value;
+    this.query.update(q => ({...q, size, page: 0}));
+  }
+
+  onSort(sortBy: string): void {
+    this.query.update(q => ({
+      ...q,
+      sortBy,
+      sortDir: q.sortBy === sortBy && q.sortDir === 'asc' ? 'desc' : 'asc',
+      page: 0,
+    }));
+  }
+
+  sortIcon(col: string): string {
+    const q = this.query();
+    if (q.sortBy !== col) return '↕';
+    return q.sortDir === 'asc' ? '↑' : '↓';
   }
 
   protected confirmAndDelete(id: number) {

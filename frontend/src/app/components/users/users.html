@@ -5,21 +5,66 @@
   bg-gray-100 dark:bg-gray-900
          text-gray-900 dark:text-gray-100
          flex flex-col justify-start py-12 sm:px-6 lg:px-8">
+
   <div class="sm:mx-auto sm:w-full sm:max-w-md">
     <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-gray-100">
       Listing Users
     </h2>
   </div>
+
   <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-5xl">
+
+    <!-- Search + Page Size toolbar -->
+    <div class="flex items-center justify-between mb-3 px-1">
+      <input
+        type="search"
+        placeholder="Search by name or email…"
+        (input)="onSearch($event)"
+        class="w-64 px-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600
+               bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100
+               placeholder-gray-400 dark:placeholder-gray-400
+               focus:outline-none focus:ring-2 focus:ring-gray-400"/>
+
+      <label class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
+        Show
+        <select
+          (change)="onSizeChange($event)"
+          class="px-2 py-2 rounded-lg border border-gray-300 dark:border-gray-600
+                 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100
+                 focus:outline-none focus:ring-2 focus:ring-gray-400">
+          <option value="10" selected>10</option>
+          <option value="25">25</option>
+          <option value="50">50</option>
+        </select>
+        per page
+      </label>
+    </div>
+
     <div class="bg-white dark:bg-gray-700 shadow sm:rounded-lg">
+
+      <!-- Sortable column headers -->
       <div class="grid grid-cols-6 gap-4 px-6 py-3 border-b font-semibold text-sm text-gray-600 dark:text-gray-200">
-        <div>ID</div>
-        <div>Full Name</div>
-        <div>Email</div>
-        <div>Role</div>
+        <div (click)="onSort('id')"
+             class="flex items-center gap-1 cursor-pointer select-none hover:text-gray-900 dark:hover:text-white transition">
+          ID <span>{{ sortIcon('id') }}</span>
+        </div>
+        <div (click)="onSort('name')"
+             class="flex items-center gap-1 cursor-pointer select-none hover:text-gray-900 dark:hover:text-white transition">
+          Full Name <span>{{ sortIcon('name') }}</span>
+        </div>
+        <div (click)="onSort('email')"
+             class="flex items-center gap-1 cursor-pointer select-none hover:text-gray-900 dark:hover:text-white transition">
+          Email <span>{{ sortIcon('email') }}</span>
+        </div>
+        <div (click)="onSort('role')"
+             class="flex items-center gap-1 cursor-pointer select-none hover:text-gray-900 dark:hover:text-white transition">
+          Role <span>{{ sortIcon('role') }}</span>
+        </div>
         <div>Modify</div>
         <div>Delete</div>
       </div>
+
+      <!-- User rows — unchanged -->
       @for (user of users(); track user.id) {
         <div
           class="grid grid-cols-6 gap-4 px-6 py-3 text-sm
@@ -37,7 +82,7 @@
          bg-gray-200 dark:bg-gray-700
          hover:bg-gray-300 dark:hover:bg-gray-600
          transition">
-            <img class="h-5 w-5" src="/edit.svg" alt="Delete user">
+            <img class="h-5 w-5" src="/edit.svg" alt="Edit user">
           </a>
           <button
             title="delete user"
@@ -46,11 +91,55 @@
          bg-gray-200 dark:bg-gray-700
          hover:bg-gray-300 dark:hover:bg-gray-600
          transition">
-            <img class="h-5 w-5" src="/delete.svg" alt="Edit user">
+            <img class="h-5 w-5" src="/delete.svg" alt="Delete user">
           </button>
         </div>
       }
     </div>
-  </div>
 
+    <!-- Pagination bar -->
+    @if (paged(); as p) {
+      <div class="flex items-center justify-between mt-4 px-1">
+
+        <span class="text-sm text-gray-500 dark:text-gray-400">
+          {{ p.totalElements }} users total
+        </span>
+
+        <div class="flex items-center gap-1">
+          <button
+            (click)="goToPage(query().page - 1)"
+            [disabled]="query().page === 0"
+            class="px-3 py-1.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600
+                   bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200
+                   hover:bg-gray-100 dark:hover:bg-gray-600 transition
+                   disabled:opacity-40 disabled:cursor-not-allowed">
+            ‹ Prev
+          </button>
+
+          @for (i of pages(); track i) {
+            <button
+              (click)="goToPage(i)"
+              class="px-3 py-1.5 text-sm rounded-lg border transition
+                     {{ i === query().page
+                       ? 'bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-900 border-gray-800 dark:border-gray-200'
+                       : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600' }}">
+              {{ i + 1 }}
+            </button>
+          }
+
+          <button
+            (click)="goToPage(query().page + 1)"
+            [disabled]="p.last"
+            class="px-3 py-1.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600
+                   bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200
+                   hover:bg-gray-100 dark:hover:bg-gray-600 transition
+                   disabled:opacity-40 disabled:cursor-not-allowed">
+            Next ›
+          </button>
+        </div>
+
+      </div>
+    }
+
+  </div>
 </div>

@@ -6,10 +6,8 @@ import ee.lio.dto.request.SignupRequest;
 import ee.lio.dto.request.UpdateRequest;
 import ee.lio.dto.response.UserResponse;
 import ee.lio.model.User;
+import org.springframework.data.domain.Page;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-
-import java.util.List;
-
 
 public interface UserService {
 
@@ -18,7 +16,12 @@ public interface UserService {
 
     void savePassword(SavePassword request);
 
-    List<UserResponse> getAllUsers();
+    Page<UserResponse> getAllUsers(int page,
+                                   int size,
+                                   String search,
+                                   String sortBy,
+                                   String sortDir);
+
 
     UserResponse getUserById(Integer id);
 
