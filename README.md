@@ -14,7 +14,8 @@ A comprehensive REST API demonstrating Spring Boot best practices, authenticatio
 - 🗄️ H2 in-memory database
 - 🎯 Clean architecture (Controller → Service → Repository)
 - 🅰️ Angular full Signals Forms and Signals based architecture
-- 🔍 Pagination and search for administrating Users
+- 📑/🔍 Pagination and search for administrating Users
+- 🚦 API call rate limit
 
 ## Tech Stack
 
@@ -208,6 +209,7 @@ Authorization: Bearer <your-jwt-token>
 - **OAuth**: Enforces everyone to set password on first login
 - **Exception Handling**: Global exception handler with proper HTTP status codes and ErrorResponse DTO
 - **Pagination Administrating Users**
+- **API Calls rate limit**: Pre-settings in `application.yaml`
 
 ## Frontend Notes
 
@@ -248,6 +250,8 @@ This project demonstrates:
 - Request validation
 - Clean code architecture
 - Exception handling strategies
+- Pagination and User search
+- API call rate limit
 
 ## Future Enhancements
 
@@ -255,6 +259,7 @@ This project demonstrates:
 - [x] Implement password reset functionality
 - [x] Add pagination for user listing
 - [ ] Integration tests
+- [x] Limit API call limit rate
 
 ## License
 

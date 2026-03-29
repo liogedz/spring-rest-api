@@ -1,27 +1,11 @@
 ###
-# @name getAllUsers only for ADMIN
-GET http://localhost:8080/api/users
-Authorization: Bearer {{auth_token}}
-
-###
-# @name getUserById
-GET http://localhost:8080/api/user/1
-Authorization: Bearer {{auth_token}}
-
-###
-
-# @name getCurrentUser
-GET http://localhost:8080/api/user/current
-Authorization: Bearer {{auth_token}}
-
-###
 # @name signup
 POST http://localhost:8080/api/auth/signup
 Content-Type: application/json
 
 {
   "name": "James Bond",
-  "email": "james@bond.net",
+  "email": "a.gedz@silport.ee",
   "password": "12345678",
   "role": "USER"
 }
@@ -32,7 +16,7 @@ POST http://localhost:8080/api/auth/login
 Content-Type: application/json
 
 {
-  "identifier": "Alex",
+  "identifier": "James Bond",
   "password": "12345678"
 }
 
@@ -42,13 +26,28 @@ POST http://localhost:8080/api/auth/verify
 Content-Type: application/json
 
 {
-  "identifier": "Alex",
-  "code": "425531"
+  "identifier": "James Bond",
+  "code": "597128"
 }
 
 > {%
     client.global.set("auth_token", response.body.data.authToken);
 %}
+
+###
+# @name getCurrentUser
+GET http://localhost:8080/api/user/current
+Authorization: Bearer {{auth_token}}
+
+###
+# @name getAllUsers only for ADMIN
+GET http://localhost:8080/api/users
+Authorization: Bearer {{auth_token}}
+
+###
+# @name getUserById
+GET http://localhost:8080/api/user/1
+Authorization: Bearer {{auth_token}}
 
 ###
 # @name update(put)

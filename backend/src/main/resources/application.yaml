@@ -52,3 +52,7 @@ app:
   cors:
     allowed-origins:
       - http://localhost:4200
+rate-limit:
+  capacity: 10
+  refill-minutes: 1
+

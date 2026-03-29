@@ -14,6 +14,16 @@ import java.time.LocalDateTime;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(RateLimitExceededException.class)
+    public ResponseEntity<ErrorResponse> handleRateLimitException(RateLimitExceededException ex) {
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+                .header("X-Rate-Limit-Retry-After",
+                        "60")
+                .body(new ErrorResponse(ex.getMessage(),
+                        429,
+                        LocalDateTime.now()));
+    }
+
     @ExceptionHandler(DataNotValidatedException.class)
     public ResponseEntity<ErrorResponse> handleValidationException(DataNotValidatedException ex) {
         return ResponseEntity.badRequest()
