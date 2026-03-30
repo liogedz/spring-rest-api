@@ -5,9 +5,9 @@ Content-Type: application/json
 
 {
   "name": "James Bond",
-  "email": "a.gedz@silport.ee",
+  "email": "james@bond.net",
   "password": "12345678",
-  "role": "USER"
+  "role": "ADMIN"
 }
 
 ###
@@ -27,7 +27,7 @@ Content-Type: application/json
 
 {
   "identifier": "James Bond",
-  "code": "939377"
+  "code": "449719"
 }
 
 > {%
