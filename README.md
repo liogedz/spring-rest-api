@@ -14,7 +14,7 @@ A comprehensive REST API demonstrating Spring Boot best practices, authenticatio
 - 🗄️ H2 in-memory database
 - 🎯 Clean architecture (Controller → Service → Repository)
 - 🅰️ Angular full Signals Forms and Signals based architecture
-- 📑/🔍 Pagination and search for administrating Users
+- 📑/🔍 Pagination search and sorting for listed Users
 - 🚦 API call rate limit
 - 🗄️ Seed database with `javafaker`
 
@@ -246,7 +246,7 @@ for now works with `Postman` or `requests.http`
 
 - should be logged in as `ADMIN` call seed endpoint
   triggers [DataSeeder](./backend/src/main/java/ee/lio/utils/DataSeeder.java ) which populates DB with some random users
-  to see how pagination works.
+  to see how pagination/sort/search works.
 
 ## Learning Focus
 
@@ -260,7 +260,7 @@ This project demonstrates:
 - Request validation
 - Clean code architecture
 - Exception handling strategies
-- Pagination and User search
+- Pagination sorting and User search
 - API call rate limit
 
 ## Future Enhancements
