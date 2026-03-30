@@ -1,7 +1,6 @@
-package ee.lio.security;
+package ee.lio.utils;
 
 import ee.lio.exceptions.RateLimitExceededException;
-import ee.lio.utils.RateLimiterService;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.ConsumptionProbe;
 import jakarta.servlet.http.HttpServletRequest;

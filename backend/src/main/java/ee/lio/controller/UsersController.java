@@ -4,20 +4,21 @@ import ee.lio.dto.response.ApiResponse;
 import ee.lio.dto.response.PagedResponse;
 import ee.lio.dto.response.UserResponse;
 import ee.lio.service.UserService;
+import ee.lio.utils.DataSeeder;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/users")
 public class UsersController {
     private final UserService userService;
+    private final DataSeeder dataSeeder;
 
-    public UsersController(UserService userService) {
+    public UsersController(UserService userService,
+                           DataSeeder dataSeeder) {
         this.userService = userService;
+        this.dataSeeder = dataSeeder;
     }
 
     @GetMapping
@@ -37,5 +38,12 @@ public class UsersController {
                         sortDir);
         return ResponseEntity.ok(new ApiResponse<>("User list",
                 new PagedResponse<>(pageData)));
+    }
+
+    @PostMapping("/seed")
+    public ResponseEntity<ApiResponse<Void>> seed() {
+        dataSeeder.seedUsers();
+        return ResponseEntity.ok(new ApiResponse<>("Database seeded successfully.",
+                null));
     }
 }

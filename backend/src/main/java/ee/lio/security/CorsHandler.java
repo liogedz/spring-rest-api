@@ -44,6 +44,4 @@ public class CorsHandler implements CorsConfigurationSource {
         ));
         return returnValue;
     }
-
-
 }

@@ -16,6 +16,7 @@ A comprehensive REST API demonstrating Spring Boot best practices, authenticatio
 - 🅰️ Angular full Signals Forms and Signals based architecture
 - 📑/🔍 Pagination and search for administrating Users
 - 🚦 API call rate limit
+- 🗄️ Seed database with `javafaker`
 
 ## Tech Stack
 
@@ -49,6 +50,7 @@ A comprehensive REST API demonstrating Spring Boot best practices, authenticatio
 - `PUT /api/user/{id}` - Full update (own account or ADMIN)
 - `PATCH /api/user/{id}` - Partial update (own account or ADMIN)
 - `DELETE /api/user/{id}` - Delete user (own account or ADMIN)
+- `POST /api/users/seed` - Seeds database (ADMIN only)
 
 ## Prerequisites
 
@@ -237,6 +239,14 @@ CORS is configured to allow requests from:
 - http://localhost:4200 (Angular dev server)
 
 Adjust allowed origins in `application.yaml` for production.
+
+## Seeding DB
+
+for now works with `Postman` or `requests.http`
+
+- should be logged in as `ADMIN` call seed endpoint
+  triggers [DataSeeder](./backend/src/main/java/ee/lio/utils/DataSeeder.java ) which populates DB with some random users
+  to see how pagination works.
 
 ## Learning Focus
 

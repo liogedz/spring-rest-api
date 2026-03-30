@@ -27,12 +27,17 @@ Content-Type: application/json
 
 {
   "identifier": "James Bond",
-  "code": "597128"
+  "code": "939377"
 }
 
 > {%
     client.global.set("auth_token", response.body.data.authToken);
 %}
+
+###
+# @name seedDataBase
+POST http://localhost:8080/api/users/seed
+Authorization: Bearer {{auth_token}}
 
 ###
 # @name getCurrentUser
