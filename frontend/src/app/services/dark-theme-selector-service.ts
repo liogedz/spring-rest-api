@@ -5,12 +5,12 @@ export enum AppTheme {
   DARK = 'dark',
 }
 
-const CLIENT_RENDER = typeof localStorage !== 'undefined';
-const LS_THEME = 'theme';
-let selectedTheme: AppTheme | undefined = undefined;
+const CLIENT_RENDER = typeof window !== 'undefined';
+const SS_THEME = 'theme';
 
+let selectedTheme: AppTheme | undefined = undefined;
 if (CLIENT_RENDER) {
-  selectedTheme = localStorage.getItem(LS_THEME) as AppTheme || undefined;
+  selectedTheme = localStorage.getItem(SS_THEME) as AppTheme || undefined;
 }
 
 @Injectable({
@@ -21,16 +21,14 @@ export class DarkThemeSelectorService {
 
   toggleTheme() {
     const current = this.currentTheme();
-
-    if (current === AppTheme.LIGHT) {
+    if (current === undefined) {
       this.setDarkTheme();
     } else if (current === AppTheme.DARK) {
-      this.setSystemTheme();
-    } else {
       this.setLightTheme();
+    } else {
+      this.setSystemTheme();
     }
   }
-
 
   setLightTheme() {
     this.currentTheme.set(AppTheme.LIGHT);
@@ -56,34 +54,29 @@ export class DarkThemeSelectorService {
 
   private addClassToHtml(className: string) {
     if (CLIENT_RENDER) {
-      this.removeClassFromHtml(className);
-      document.documentElement.classList.add(className)
+      document.documentElement.classList.add(className);
     }
   }
 
   private removeClassFromHtml(className: string) {
     if (CLIENT_RENDER) {
-      document.documentElement.classList.remove(className)
+      document.documentElement.classList.remove(className);
     }
   }
 
   private setToLocalStorage(theme: AppTheme) {
     if (CLIENT_RENDER) {
-      localStorage.setItem(LS_THEME, theme);
+      localStorage.setItem(SS_THEME, theme);
     }
   }
 
   private removeFromLocalStorage() {
     if (CLIENT_RENDER) {
-      localStorage.removeItem(LS_THEME);
+      localStorage.removeItem(SS_THEME);
     }
   }
 }
 
 function isSystemDark() {
-  if (typeof window !== 'undefined') {
-    return window.matchMedia('(prefers-color-scheme: dark)').matches;
-  } else {
-    return false;
-  }
+  return CLIENT_RENDER && window.matchMedia('(prefers-color-scheme: dark)').matches;
 }
