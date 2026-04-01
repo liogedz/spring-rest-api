@@ -242,7 +242,7 @@ Adjust allowed origins in `application.yaml` for production.
 
 ## Seeding DB
 
-for now works with `Postman` or `requests.http`
+working button at users page for Admin in frontend and with `Postman` or `requests.http`
 
 - should be logged in as `ADMIN` call seed endpoint
   triggers [DataSeeder](./backend/src/main/java/ee/lio/utils/DataSeeder.java ) which populates DB with some random users

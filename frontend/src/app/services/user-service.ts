@@ -13,7 +13,7 @@ import {UserQuery} from '@common/user-query';
 export class UserService {
   private apiUrl = `${ENVIRONMENT.apiUrl}/user`
 
-
+  loading = signal(false);
   users = computed(() => this.pagedUsers()?.content ?? []);
   pagedUsers = signal<PagedResponse<ProfileData> | null>(null);
 
@@ -24,6 +24,7 @@ export class UserService {
   }
 
   getAllUsers(query: UserQuery): void {
+    this.loading.set(true);
     const params = new HttpParams()
       .set('page', query.page)
       .set('size', query.size)
@@ -31,19 +32,24 @@ export class UserService {
       .set('sortBy', query.sortBy)
       .set('sortDir', query.sortDir);
 
-    this.http.get<ApiResponse<PagedResponse<ProfileData>>>(`${this.apiUrl}s`, {params}).subscribe({
-      next: (response) =>
-        this.pagedUsers.set(response.data),
-      error: (err: any) => {
-        this.snackBar.open(
-          err.error.message,
-          'close',
-          {
-            duration: 0,
-            panelClass: ['error-snackbar']
-          });
-      }
-    });
+    this.http.get<ApiResponse<PagedResponse<ProfileData>>>(`${this.apiUrl}s`, {params})
+      .subscribe({
+        next: (response) =>
+          this.pagedUsers.set(response.data),
+        error: (err: any) => {
+          this.snackBar.open(
+            err.error.message,
+            'close',
+            {
+              duration: 0,
+              panelClass: ['error-snackbar']
+            });
+        }
+      });
+  }
+
+  seedUsers() {
+    return this.http.post <ApiResponse<string>>(`${this.apiUrl}s/seed`, {});
   }
 
   getUserById(id: number) {

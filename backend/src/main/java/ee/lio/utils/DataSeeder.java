@@ -46,7 +46,7 @@ public class DataSeeder {
             users.add(user);
         }
 
-        for (int i = 0; i < 11; i++) {
+        for (int i = 0; i < 10; i++) {
             User user = new User();
             user.setName(faker.name().fullName());
             user.setEmail(faker.internet().emailAddress());
@@ -60,7 +60,7 @@ public class DataSeeder {
             users.add(user);
         }
 
-        for (int i = 0; i < 11; i++) {
+        for (int i = 0; i < 10; i++) {
             User user = new User();
             user.setName(faker.name().fullName());
             user.setEmail(faker.internet().emailAddress());
@@ -73,8 +73,8 @@ public class DataSeeder {
             user.setConfirmed(true);
             users.add(user);
         }
-        
-        for (int i = 0; i < 11; i++) {
+
+        for (int i = 0; i < 10; i++) {
             User user = new User();
             user.setName(faker.name().fullName());
             user.setEmail(faker.internet().emailAddress());

@@ -3,6 +3,7 @@ import {UserService} from '@services/user-service';
 import {RouterLink} from '@angular/router';
 import {AuthService} from '@services/auth-service';
 import {UserQuery} from '@common/user-query';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-users',
@@ -16,9 +17,11 @@ export class Users {
 
   private userService = inject(UserService);
   private authService: AuthService = inject(AuthService);
+  private snackBar = inject(MatSnackBar);
   users = this.userService.users;
   currentUser = this.authService.currentUser;
   paged = this.userService.pagedUsers;
+  seeding = signal(false);
 
   query = signal<UserQuery>({
     page: 0,
@@ -75,5 +78,26 @@ export class Users {
 
   private removeUser(id: number) {
     this.userService.deleteUser(id);
+  }
+
+  protected seedDatabase() {
+    this.seeding.set(true);
+    this.userService.seedUsers().subscribe({
+
+      next: () => {
+        this.seeding.set(false);
+        this.query.update(q => ({...q, page: 0}))
+      },
+      error: (err: any) => {
+        this.seeding.set(false);
+        this.snackBar.open(
+          err.error.message,
+          'close',
+          {
+            duration: 0,
+            panelClass: ['error-snackbar']
+          });
+      }
+    })
   }
 }

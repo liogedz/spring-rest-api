@@ -24,6 +24,24 @@
                bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100
                placeholder-gray-400 dark:placeholder-gray-400
                focus:outline-none focus:ring-2 focus:ring-gray-400"/>
+      <button
+        title="seed users"
+        (click)="seedDatabase()"
+        [disabled]="seeding()"
+        class="cursor-pointer p-2 rounded-lg
+               bg-gray-200 dark:bg-gray-700
+               hover:bg-gray-300 dark:hover:bg-gray-600
+               transition disabled:opacity-40 disabled:cursor-not-allowed">
+        <img class="h-7 w-7" src="/database-add.svg" alt="seeding">
+
+        @if (seeding()) {
+          <div class="h-4 w-4 animate-spin rounded-full
+                border-2 border-gray-400 border-t-gray-700
+                dark:border-gray-500 dark:border-t-gray-200"></div>
+          Seeding…
+        }
+
+      </button>
 
       <label class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
         Show
