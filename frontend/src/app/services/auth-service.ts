@@ -45,7 +45,8 @@ export class AuthService {
   }
 
   logout(): void {
-    localStorage.clear();
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('authToken');
     this._isAuthenticated.set(false);
     this.currentUser.set(null);
 
