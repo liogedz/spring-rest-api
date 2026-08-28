@@ -77,7 +77,29 @@ export class Users {
   }
 
   private removeUser(id: number) {
-    this.userService.deleteUser(id);
+    this.userService.deleteUser(id)
+      .subscribe({
+        next: (response) => {
+          this.snackBar.open(
+            response.message,
+            'ok',
+            {
+              duration: 3000,
+              panelClass: ['success-snackbar']
+            });
+          if (id == this.currentUser()?.id) this.authService.logout()
+        },
+        error: (err: any) => {
+          this.showError(err.error.message);
+        }
+      });
+  }
+
+  showError(message: string) {
+    this.snackBar.open(message, 'Close', {
+      duration: 0,
+      panelClass: ['error-snackbar']
+    });
   }
 
   protected seedDatabase() {

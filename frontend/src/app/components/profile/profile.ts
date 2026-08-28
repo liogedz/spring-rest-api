@@ -15,7 +15,7 @@ import {
 import {UserService} from '@services/user-service';
 import {AuthService} from '@services/auth-service';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {firstValueFrom} from 'rxjs';
 
 @Component({
@@ -38,6 +38,7 @@ export class Profile implements OnInit {
     private authService: AuthService,
     private snackBar: MatSnackBar,
     private route: ActivatedRoute,
+    private router: Router,
   ) {
   }
 
@@ -195,7 +196,7 @@ export class Profile implements OnInit {
               duration: 3000,
               panelClass: ['success-snackbar']
             });
-          this.authService.logout();
+          this.isSelf() ? this.authService.logout() : this.router.navigate(['/users'])
         },
         error: (err: any) => {
           this.showError(err.error.message);
