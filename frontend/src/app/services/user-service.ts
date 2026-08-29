@@ -3,7 +3,6 @@ import {ENVIRONMENT} from "@common/environment";
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {ProfileData} from '@common/profile-data';
 import {ApiResponse} from '@common/api-response';
-import {MatSnackBar} from '@angular/material/snack-bar';
 import {PagedResponse} from '@common/paged-response';
 import {UserQuery} from '@common/user-query';
 
@@ -19,11 +18,10 @@ export class UserService {
 
   constructor(
     private http: HttpClient,
-    private snackBar: MatSnackBar
   ) {
   }
 
-  getAllUsers(query: UserQuery): void {
+  getAllUsers(query: UserQuery) {
     this.loading.set(true);
     const params = new HttpParams()
       .set('page', query.page)
@@ -32,20 +30,9 @@ export class UserService {
       .set('sortBy', query.sortBy)
       .set('sortDir', query.sortDir);
 
-    this.http.get<ApiResponse<PagedResponse<ProfileData>>>(`${this.apiUrl}s`, {params})
-      .subscribe({
-        next: (response) =>
-          this.pagedUsers.set(response.data),
-        error: (err: any) => {
-          this.snackBar.open(
-            err.error.message,
-            'close',
-            {
-              duration: 0,
-              panelClass: ['error-snackbar']
-            });
-        }
-      });
+    return this.http.get<ApiResponse<PagedResponse<ProfileData>>>(
+      `${this.apiUrl}s`,
+      {params});
   }
 
   seedUsers() {
@@ -54,6 +41,10 @@ export class UserService {
 
   getUserById(id: number) {
     return this.http.get<ApiResponse<ProfileData>>(`${this.apiUrl}/${id}`)
+  }
+
+  setUsers(data: PagedResponse<ProfileData>) {
+    this.pagedUsers.set(data);
   }
 
   patchUser(profileData: ProfileData) {

@@ -35,7 +35,22 @@ export class Users {
     Array.from({length: this.paged()?.totalPages ?? 0}, (_, i) => i)
   );
 
-  private _ = effect(() => this.userService.getAllUsers(this.query()));
+  private loadUsers(query: UserQuery) {
+    this.userService.getAllUsers(query)
+      .subscribe({
+        next: response => {
+          this.userService.setUsers(response.data);
+        },
+        error: (err: any) => {
+          this.showError(err.error.message);
+        }
+      });
+  }
+
+  private _ = effect(() => {
+    const query = this.query();
+    this.loadUsers(query)
+  });
 
   goToPage(page: number): void {
     this.query.update(q => ({...q, page}));
@@ -87,7 +102,11 @@ export class Users {
               duration: 3000,
               panelClass: ['success-snackbar']
             });
-          if (id == this.currentUser()?.id) this.authService.logout()
+          if (id === this.currentUser()?.id) {
+            this.authService.logout()
+            return
+          }
+          this.loadUsers(this.query());
         },
         error: (err: any) => {
           this.showError(err.error.message);
