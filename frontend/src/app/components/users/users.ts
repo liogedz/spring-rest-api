@@ -131,13 +131,7 @@ export class Users {
       },
       error: (err: any) => {
         this.seeding.set(false);
-        this.snackBar.open(
-          err.error.message,
-          'close',
-          {
-            duration: 0,
-            panelClass: ['error-snackbar']
-          });
+        this.showError(err.error.message);
       }
     })
   }

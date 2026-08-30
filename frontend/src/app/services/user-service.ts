@@ -12,7 +12,6 @@ import {UserQuery} from '@common/user-query';
 export class UserService {
   private apiUrl = `${ENVIRONMENT.apiUrl}/user`
 
-  loading = signal(false);
   users = computed(() => this.pagedUsers()?.content ?? []);
   pagedUsers = signal<PagedResponse<ProfileData> | null>(null);
 
@@ -22,7 +21,6 @@ export class UserService {
   }
 
   getAllUsers(query: UserQuery) {
-    this.loading.set(true);
     const params = new HttpParams()
       .set('page', query.page)
       .set('size', query.size)
